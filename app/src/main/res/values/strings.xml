@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Archit Art Gallery</string>
+    <string name="forget">Enters the email address you used to register with Dynamic Layers. You will receive an email to define a new password.</string>
+    <string name="terms">By continuing, you agree to our <font color="#0D99FF">Terms of Service</font> and confirm that you have read our <font color="#0D99FF">Privacy Policy</font> to learn how we collect, use, and share your data.</string>
+    <string-array name="indian_states">
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chhattisgarh</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Odisha</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Tripura</item>
+        <item>Uttar Pradesh</item>
+        <item>Uttarakhand</item>
+        <item>West Bengal</item>
+    </string-array>
+    <string name="delhi_gst">Delhi GST  @<font color="#0D99FF">9%</font></string>
+    <string name="c_gst">CGST  @<font color="#0D99FF">9%</font></string>
+    <string name="i_gst">IGST  @<font color="#0D99FF">18%</font></string>
+    <string name="forget_string"><u>Update Password ?</u></string>
+    <integer-array name="initial_slider_values">
+        <item>0</item>
+        <item>400</item>
+    </integer-array>
+</resources>

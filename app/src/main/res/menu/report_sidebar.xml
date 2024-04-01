@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/purchase_sale"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Purchase sale"
+        android:contentDescription="Menu"
+        />
+    <item
+        android:id="@+id/actual_sale"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Actual Sale"
+        android:contentDescription="Menu"
+        />
+    <item
+        android:id="@+id/expense_report"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Expense Report"
+        android:contentDescription="Menu"
+        />
+    <item
+        android:id="@+id/account_receivable"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Account Receivable"
+        android:contentDescription="Menu"
+        />
+    <item
+        android:id="@+id/invoice_list"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Invoice List"
+        android:contentDescription="Menu"
+        />
+    <item
+        android:id="@+id/itemized_sale"
+        android:icon="@drawable/ic_recipt"
+        android:enabled="true"
+        android:title="Itemized Sale"
+        android:contentDescription="Menu"
+        />
+</menu>

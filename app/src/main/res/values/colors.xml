@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="primary_color">#0D99FF</color>
+    <color name="secondery_color">#7C0D99FF</color>
+    <color name="my_ripple">#290D98FE</color>
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu"
+        android:icon="@drawable/ic_menu_24px"
+        android:enabled="true"
+        android:title="Menu"
+        android:contentDescription="Menu"
+        />
+
+    <item
+        android:id="@+id/barcode"
+        android:icon="@drawable/ic_scanner_24px"
+        android:enabled="true"
+        android:title="Barcode"
+        android:contentDescription="Barcode"
+        />
+
+    <item
+        android:id="@+id/add_inv"
+        android:icon="@drawable/ic_ad"
+        android:enabled="true"
+        android:title="Add Invoices"
+        android:contentDescription="Add Invoices"
+        />
+
+    <item
+        android:id="@+id/report"
+        android:icon="@drawable/ic_report_24"
+        android:enabled="true"
+        android:title="Report"
+        android:contentDescription="Report"
+        />
+
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_profile_24x"
+        android:enabled="true"
+        android:title="My Profile"
+        android:contentDescription="My Profile"
+        />
+</menu>

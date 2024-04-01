@@ -1,0 +1,30 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Archit_Art_Gallery" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+         <item name="colorPrimary">@color/primary_color</item>
+        <item name="bottomAppBarStyle">@style/ThemeOverlay.Material3.BottomAppBar</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:colorControlHighlight">@color/my_ripple</item>
+        <item name="android:colorActivatedHighlight">@color/my_ripple</item>
+    </style>
+
+    <style name="Theme.Archit_Art_Gallery" parent="Base.Theme.Archit_Art_Gallery" />
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/primary_color</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Theme.Design.Light.BottomSheetDialog">
+
+        <item name="bottomSheetStyle">@style/Modal</item>
+        
+    </style>
+
+    <style name="Modal" parent="Widget.Design.BottomSheet.Modal">
+
+        <item name="android:background">#00FFFFFF</item>
+
+    </style>
+
+</resources>
