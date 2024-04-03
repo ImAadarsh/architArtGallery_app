@@ -38,11 +38,12 @@ public class Dashboard extends AppCompatActivity {
     private static final String SHARED_PREFS = "login_cred";
     private static final String PHONE_KEY = "Phone_Key";
     private static final String PASSWORD_KEY = "Password_Key";
+    private static final String USER_LOGGED_IN_DATA_KEY = "Password_Key";
 
     BottomNavigationView bottomNavigationBar;
 
     SharedPreferences sharedpreferences;
-    String phone;
+    String phone, password, user_logged_in_data;
 
     DrawerLayout drawerLayout;
     DrawerLayout profileDrawerLayout, reportDrawerLayout;
@@ -194,7 +195,9 @@ public class Dashboard extends AppCompatActivity {
         dashboard_invoice_search = findViewById(R.id.dashboard_invoice_search);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        phone = sharedpreferences.getString("Phone_key", null);
+        phone = sharedpreferences.getString(PHONE_KEY, null);
+        password = sharedpreferences.getString(PASSWORD_KEY, null);
+        user_logged_in_data = sharedpreferences.getString(USER_LOGGED_IN_DATA_KEY, null);
 
         bottomNavigationBar = findViewById(R.id.bottom_navigation);
         // Default Select

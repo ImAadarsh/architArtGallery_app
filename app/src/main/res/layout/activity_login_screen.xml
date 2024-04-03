@@ -74,17 +74,32 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <com.google.android.material.button.MaterialButton
-            android:layout_marginTop="40dp"
-            android:id="@+id/login_button"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:height="60dp"
-            android:text="Login"
-            app:cornerRadius="6dp"
-            tools:layout_editor_absoluteX="30dp"
-            tools:layout_editor_absoluteY="30dp" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:height="60dp"
+                android:text="Login"
+                app:cornerRadius="6dp" />
+
+            <ProgressBar
+                android:layout_marginTop="88dp"
+                android:background="@drawable/border_radious"
+                android:backgroundTint="@color/primary_color"
+                android:indeterminateTint="@color/white"
+                android:id="@+id/loading_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:layout_centerVertical="true"
+                android:layout_alignEnd="@id/login_button"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
