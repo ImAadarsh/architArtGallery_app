@@ -24,12 +24,14 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -56,11 +58,12 @@ public class Dashboard extends AppCompatActivity {
     // Elements
     private ImageView dashboard_invoice_search;
     private ImageView profile_slider_back, my_profile_slider_back, my_report_slider_back;
-
+    TextView total_actual_sale_date;
     boolean mIsButtonShowing = false;
     float mButtonWidth;
 
     Drawable mDeleteIcon, mEditIcon, mPdfIcon;
+    ArrayList<String> myMonths;
 
     AutoCompleteTextView india_all_state_autocomplete_view;
     MaterialButton my_profile_logout;
@@ -69,6 +72,25 @@ public class Dashboard extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+
+        // Manged Current Date
+        myMonths = new ArrayList<>();
+        myMonths.add("January");
+        myMonths.add("February");
+        myMonths.add("March");
+        myMonths.add("April");
+        myMonths.add("May");
+        myMonths.add("June");
+        myMonths.add("July");
+        myMonths.add("August");
+        myMonths.add("September");
+        myMonths.add("October");
+        myMonths.add("November");
+        myMonths.add("December");
+        total_actual_sale_date = findViewById(R.id.total_actual_sale_date);
+        LocalDate date = LocalDate.now();
+        String selectedDate = formatDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
+        total_actual_sale_date.setText(selectedDate);
 
         dataArrayList.add(new ListData("Arun kumar : 12345678", "11 Jan", 400));
         dataArrayList.add(new ListData("Archit Arrora : 123456789", "11 Jan", 400));
@@ -395,5 +417,11 @@ public class Dashboard extends AppCompatActivity {
             startActivity(search_activity);
         });
 
+    }
+
+    private String formatDate(int year, int month, int day) {
+        // You can use a library like ThreeTenABP or SimpleDateFormat to format the date
+        // Here's a basic example using String formatting (limited options)
+        return day + " " + myMonths.get(month) + " " + year; // Month is 0-indexed
     }
 }
