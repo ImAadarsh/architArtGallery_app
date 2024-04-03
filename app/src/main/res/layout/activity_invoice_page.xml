@@ -76,7 +76,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginHorizontal="5dp"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -90,7 +90,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/invoice_card_layout_outer_border">
@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Invoice to: "
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/invoice_card_layout_outer_border">
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Customer type: "
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -141,16 +141,15 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                    android:layout_width="160dp"
+                    android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="10dp"
-                    app:boxBackgroundColor="@color/white"
-                    app:boxStrokeWidthFocused="1sp"
-                    app:boxStrokeWidth="1sp"
                     android:hint="Retailer"
                     android:textSize="18sp"
+                    app:boxBackgroundColor="@color/white"
+                    app:boxStrokeWidth="1sp"
+                    app:boxStrokeWidthFocused="1sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textView4"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <AutoCompleteTextView
@@ -164,7 +163,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/invoice_card_layout_outer_border">
@@ -174,8 +173,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:text="Adhaar Number: "
-                    android:textSize="20sp"
+                    android:text="Aadhaar Number: "
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -197,7 +196,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/billing_address_edit"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/invoice_card_layout_outer_border">
@@ -208,7 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Billing Address: "
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -231,7 +230,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/shipping_address_edit"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/invoice_card_layout_outer_border">
@@ -242,7 +241,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Shipping Address: "
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -280,7 +279,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"
@@ -292,7 +291,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Mobile Number:  "
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

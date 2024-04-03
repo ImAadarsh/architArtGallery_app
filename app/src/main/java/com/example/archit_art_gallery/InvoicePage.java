@@ -105,9 +105,11 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         StringBuilder stringBuilder = new StringBuilder();
         int nextLineNeed = 0;
         for (String item : billing_address_text_input_data) {
-            stringBuilder.append(item).append(", ");
-            if(nextLineNeed == 2) stringBuilder.append("\n");
-            nextLineNeed += 1;
+            if(item.length() >= 1) {
+                stringBuilder.append(item).append(", ");
+                if(nextLineNeed == 2) stringBuilder.append("\n");
+                nextLineNeed += 1;
+            }
         }
         String concatenatedString = stringBuilder.toString();
         billing_address_text.setText(concatenatedString);
@@ -115,9 +117,11 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         StringBuilder stringShippBuilder = new StringBuilder();
         int nextLineNeedShip = 0;
         for (String item : shipping_address_text_input_data) {
-            stringShippBuilder.append(item).append(", ");
-            if(nextLineNeedShip == 2) stringShippBuilder.append("\n");
-            nextLineNeedShip += 1;
+            if(item.length() >= 1) {
+                stringShippBuilder.append(item).append(", ");
+                if(nextLineNeedShip == 2) stringShippBuilder.append("\n");
+                nextLineNeedShip += 1;
+            }
         }
         String concatenatedString2 = stringShippBuilder.toString();
         shipping_address_text.setText(concatenatedString2);

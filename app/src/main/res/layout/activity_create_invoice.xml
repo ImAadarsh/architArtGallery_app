@@ -152,15 +152,16 @@
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:text="Total (Excluding GST)"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:textAlignment="textEnd"
                         android:id="@+id/total_ex_gst"
                         android:layout_width="0dp"
                         android:layout_weight="1.5"
                         android:text="₹0"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                 </TableRow>
 
@@ -172,14 +173,15 @@
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:text="@string/delhi_gst"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
+                        android:textAlignment="textEnd"
                         android:id="@+id/delhi_gst_cost"
                         android:layout_width="0dp"
                         android:layout_weight="1.5"
                         android:text="₹0"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </TableRow>
 
                 <TableRow
@@ -190,14 +192,15 @@
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:text="@string/c_gst"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
+                        android:textAlignment="textEnd"
                         android:id="@+id/cgst_gst_cost"
                         android:layout_width="0dp"
                         android:layout_weight="1.5"
                         android:text="₹0"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </TableRow>
 
                 <TableRow>
@@ -206,14 +209,15 @@
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:text="@string/i_gst"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
                     <TextView
+                        android:textAlignment="textEnd"
                         android:id="@+id/igst_gst_cost"
                         android:layout_width="0dp"
                         android:layout_weight="1.5"
                         android:text="₹0"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </TableRow>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -229,15 +233,16 @@
                         android:layout_width="0dp"
                         android:layout_weight="6"
                         android:text="Total(Including GST)"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:textAlignment="textEnd"
                         android:id="@+id/total_with_gst"
                         android:layout_width="0dp"
                         android:layout_weight="1.5"
                         android:text="₹0"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                 </TableRow>
 
