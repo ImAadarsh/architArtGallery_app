@@ -37,7 +37,7 @@ public class LoginScreen extends AppCompatActivity {
     private static final String SHARED_PREFS = "login_cred";
     private static final String PHONE_KEY = "Phone_Key";
     private static final String PASSWORD_KEY = "Password_Key";
-    private static final String USER_LOGGED_IN_DATA_KEY = "Password_Key";
+    private static final String USER_LOGGED_IN_DATA_KEY = "Login_User_Info";
 
     private TextInputEditText phoneNumber;
     private TextInputEditText userPassword;

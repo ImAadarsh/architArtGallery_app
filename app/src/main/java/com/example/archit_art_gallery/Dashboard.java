@@ -2,7 +2,6 @@ package com.example.archit_art_gallery;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuView;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -23,24 +22,35 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Dashboard extends AppCompatActivity {
 
     private static final String SHARED_PREFS = "login_cred";
     private static final String PHONE_KEY = "Phone_Key";
     private static final String PASSWORD_KEY = "Password_Key";
-    private static final String USER_LOGGED_IN_DATA_KEY = "Password_Key";
+    private static final String USER_LOGGED_IN_DATA_KEY = "Login_User_Info";
 
     BottomNavigationView bottomNavigationBar;
 
@@ -53,13 +63,11 @@ public class Dashboard extends AppCompatActivity {
     RecyclerView recyclerView;
     ListAdapter invoiceAdaptor;
     ArrayList<ListData> dataArrayList = new ArrayList<>();
-    ListData listData;
 
     // Elements
     private ImageView dashboard_invoice_search;
     private ImageView profile_slider_back, my_profile_slider_back, my_report_slider_back;
     TextView total_actual_sale_date;
-    boolean mIsButtonShowing = false;
     float mButtonWidth;
 
     Drawable mDeleteIcon, mEditIcon, mPdfIcon;
@@ -67,6 +75,12 @@ public class Dashboard extends AppCompatActivity {
 
     AutoCompleteTextView india_all_state_autocomplete_view;
     MaterialButton my_profile_logout;
+    TextInputEditText my_profile_name_edit, profile_password;
+    TextView report_profile_user_name, report_profile_user_role, menu_profile_user_name, menu_profile_user_role;
+    Button update_profile;
+    JSONObject jsonResponse = new JSONObject();
+
+    final static String base_url = "https://api.architartgallery.in/public";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -234,7 +248,41 @@ public class Dashboard extends AppCompatActivity {
         NavigationView report_sidebar_nav = findViewById(R.id.report_sidebar_nav);
 
         bottomNavigationBar.setOnItemSelectedListener(item -> {
-//            Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+            // Logged In User Info
+            String USERNAME = "";
+            String PASSWORD = "";
+            String ROLE = "";
+            String PHONE = "";
+
+            try {
+                jsonResponse = new JSONObject(user_logged_in_data);
+                USERNAME = jsonResponse.getJSONObject("user").getString("name");
+                PASSWORD = jsonResponse.getJSONObject("user").getString("passcode");
+                ROLE = jsonResponse.getJSONObject("user").getString("role");
+                PHONE = jsonResponse.getJSONObject("user").getString("phone");
+            } catch (JSONException e) {
+                Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+            }
+
+            // Profile User Details Set
+            my_profile_name_edit = findViewById(R.id.my_profile_name_edit);
+            my_profile_name_edit.setText(USERNAME);
+            profile_password = findViewById(R.id.profile_password);
+            profile_password.setText(PASSWORD);
+            update_profile = findViewById(R.id.update_profile);
+
+            // Report User Details Set
+            report_profile_user_name = findViewById(R.id.report_profile_user_name);
+            report_profile_user_role = findViewById(R.id.report_profile_user_role);
+            report_profile_user_name.setText(USERNAME);
+            report_profile_user_role.setText(ROLE);
+
+            // Menu
+            menu_profile_user_name = findViewById(R.id.menu_profile_user_name);
+            menu_profile_user_role = findViewById(R.id.menu_profile_user_role);
+            menu_profile_user_name.setText(USERNAME);
+            menu_profile_user_role.setText(ROLE);
+
             if(item.getTitle().equals("Menu")) {
                 drawerLayout.setElevation(10);
                 drawerLayout.open();
@@ -268,6 +316,15 @@ public class Dashboard extends AppCompatActivity {
             if(item.getTitle().equals("My Profile")) {
                 profileDrawerLayout.setElevation(10);
                 profileDrawerLayout.open();
+
+                String finalPHONE = PHONE;
+                update_profile.setOnClickListener(profile_update -> {
+                    Map<String, String> data = new HashMap<>();
+                    data.put("phone", finalPHONE);
+                    data.put("password", profile_password.getText().toString());
+                    data.put("name", my_profile_name_edit.getText().toString());
+                    req(data, "/api/updateprofile", "User is Updated sucessfully.");
+                });
 
                 // Profile back button
                 my_profile_slider_back = findViewById(R.id.my_profile_back);
@@ -420,8 +477,83 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private String formatDate(int year, int month, int day) {
-        // You can use a library like ThreeTenABP or SimpleDateFormat to format the date
-        // Here's a basic example using String formatting (limited options)
-        return day + " " + myMonths.get(month) + " " + year; // Month is 0-indexed
+        return day + " " + myMonths.get(month) + " " + year;
+    }
+
+    void req(Map<String, String> data, String api_endpoint, String condition) {
+        setProfileUpdateLoading(true, "");
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, base_url + api_endpoint,
+                response -> {
+                    // Handle successful response
+                    try {
+                        // Convert response string to JSON object
+                        JSONObject jsonResponse = new JSONObject(response);
+                        // Now you can access data from the JSON object
+                        String message = jsonResponse.getString("message");
+
+                        if(message.equals(condition)) {
+                            setProfileUpdateLoading(false, response);
+                            Toast.makeText(getApplicationContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
+                        }else {
+                            // Handle the data accordingly
+                            Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
+                            setProfileUpdateLoading(false, "");
+                        }
+                    } catch (JSONException e) {
+                        // Handle JSON parsing error
+                        Toast.makeText(getApplicationContext(), "Error: API response error!", Toast.LENGTH_SHORT).show();
+                        setProfileUpdateLoading(false, "");
+                    }
+                },
+                error -> {
+                    // Handle error
+                    Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_LONG).show();
+                    setProfileUpdateLoading(false, "");
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Construct form data
+                return data;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                // You can add headers here if needed
+                Map<String, String> headers = new HashMap<>();
+                // Add headers if needed
+                return headers;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(getApplicationContext()).add(stringRequest);
+    }
+
+    private void setProfileUpdateLoading(boolean loading, String response) {
+        if (loading) {
+            update_profile.setText("Wait....");
+            update_profile.setEnabled(false);
+        } else {
+            update_profile.setText("Update Profile ?");
+            update_profile.setEnabled(true);
+            if(response.length() >= 10) {
+                SharedPreferences.Editor editor = sharedpreferences.edit();
+                user_logged_in_data = response.replaceFirst("data", "user");
+                try {
+                    jsonResponse = new JSONObject(response.replaceFirst("data", "user"));
+                    String name = jsonResponse.getJSONObject("user").getString("name");
+                    my_profile_name_edit.setText(name);
+                    report_profile_user_name.setText(name);
+                    menu_profile_user_name.setText(name);
+                    profile_password.setText(jsonResponse.getJSONObject("user").getString("passcode"));
+                    editor.putString(PHONE_KEY, jsonResponse.getJSONObject("user").getString("phone"));
+                    editor.putString(PASSWORD_KEY, jsonResponse.getJSONObject("user").getString("passcode"));
+                    editor.putString(USER_LOGGED_IN_DATA_KEY, user_logged_in_data);
+                    editor.apply();
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

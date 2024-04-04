@@ -74,10 +74,11 @@
             android:hint="Full Name">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/my_profile_name_edit"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="Ramesh Kumar"
-                android:inputType="phone" />
+                android:text="Ramesh"
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,16 +98,23 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:textColorLink="@color/primary_color"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/forget_string"
-            android:textAlignment="textEnd"
-            android:textColor="@color/primary_color"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/update_profile"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forget_string"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"

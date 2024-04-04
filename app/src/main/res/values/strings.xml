@@ -35,7 +35,7 @@
     <string name="delhi_gst">Delhi GST  @<font color="#0D99FF">9%</font></string>
     <string name="c_gst">CGST  @<font color="#0D99FF">9%</font></string>
     <string name="i_gst">IGST  @<font color="#0D99FF">18%</font></string>
-    <string name="forget_string"><u>Update Password ?</u></string>
+    <string name="forget_string"><u>Update Profile ?</u></string>
     <integer-array name="initial_slider_values">
         <item>0</item>
         <item>400</item>
