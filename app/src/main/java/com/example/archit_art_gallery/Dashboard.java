@@ -300,10 +300,7 @@ public class Dashboard extends AppCompatActivity {
                 String[] shipping_address = {"", "", "", "", ""};
                 Intent add_invoice = new Intent(getApplicationContext(), InvoicePage.class);
 
-                // Generate Random Invoice Number
-                long invoice_number = (long)(Math.random() * 9_000_000_000L) + 1_000_000_000L;
-
-                add_invoice.putExtra("INVOICE_SERIAL_NO", invoice_number + "");
+                add_invoice.putExtra("INVOICE_SERIAL_NO", "");
                 add_invoice.putExtra("INVOICE_TO", "");
                 add_invoice.putExtra("CUSTOMER_TYPE", "");
                 add_invoice.putExtra("AADHAAR_NUMBER", "");

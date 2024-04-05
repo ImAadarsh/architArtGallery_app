@@ -143,7 +143,7 @@
                     style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
                     android:layout_width="140dp"
                     android:layout_height="wrap_content"
-                    android:hint="Retailer"
+                    android:hint="Type"
                     android:textSize="18sp"
                     app:boxBackgroundColor="@color/white"
                     app:boxStrokeWidth="1sp"

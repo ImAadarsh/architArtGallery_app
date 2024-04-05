@@ -3,8 +3,11 @@ package com.example.archit_art_gallery;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +21,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class InvoicePage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -55,10 +65,59 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
     TextView invoice_pike_date;
     ArrayList<String> monthNames;
 
+    final static String base_url = "https://api.architartgallery.in/public";
+    private static final String SHARED_PREFS = "login_cred";
+    private static final String PHONE_KEY = "Phone_Key";
+    private static final String PASSWORD_KEY = "Password_Key";
+    private static final String USER_LOGGED_IN_DATA_KEY = "Login_User_Info";
+    SharedPreferences sharedpreferences;
+    String phone, password, user_logged_in_data, location_id, business_id;
+    JSONObject jsonResponse;
+    int Invoice_ID = 0;
+    int Serial_NO = 0;
+    int Billing_Address_ID = 0;
+    int Shipping_Address_ID = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_page);
+
+        Map<String, String> typeRequestData = new HashMap<>();
+        AlertDialog.Builder builder = new AlertDialog.Builder(InvoicePage.this);
+        // set title
+        builder.setTitle("Choose One of them?");
+        // set message
+        builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
+        // set two buttons.
+        builder.setPositiveButton("Performa", (dialogInterface, i) -> {
+            typeRequestData.put("type", "performa");
+            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+        });
+        builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
+            typeRequestData.put("type", "dummy");
+            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+        });
+        builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
+            typeRequestData.put("type", "normal");
+            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+        });
+        // show the alert.
+        builder.show();
+
+        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        phone = sharedpreferences.getString(PHONE_KEY, null);
+        password = sharedpreferences.getString(PASSWORD_KEY, null);
+        user_logged_in_data = sharedpreferences.getString(USER_LOGGED_IN_DATA_KEY, null);
+
+        try {
+            jsonResponse = new JSONObject(user_logged_in_data);
+            location_id = jsonResponse.getJSONObject("user").getString("location_id");
+            business_id = jsonResponse.getJSONObject("user").getString("business_id");
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+        }
 
         // Select Default Date
         monthNames = new ArrayList<>();
@@ -168,6 +227,18 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             });
 
             save_address_button.setOnClickListener(addressEv -> {
+
+                Map<String, String> addressReqData = new HashMap<>();
+                addressReqData.put("invoice_id", Invoice_ID + "");
+                addressReqData.put("type", "0");
+                addressReqData.put("address_1", address_1_edit_text.getText().toString());
+                addressReqData.put("address_2", address_2_edit_text.getText().toString());
+                addressReqData.put("city", city_edit_text.getText().toString());
+                addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
+                addressReqData.put("pincode", pincode_edit_text.getText().toString());
+                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_billing_address");
+
+
                 String []billing_address_edited = { address_1_edit_text.getText().toString(),
                         address_2_edit_text.getText().toString(),
                         city_edit_text.getText().toString(),
@@ -227,6 +298,17 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             });
 
             save_address_button.setOnClickListener(addressEv -> {
+
+                Map<String, String> addressReqData = new HashMap<>();
+                addressReqData.put("invoice_id", Invoice_ID + "");
+                addressReqData.put("type", "1");
+                addressReqData.put("address_1", address_1_edit_text.getText().toString());
+                addressReqData.put("address_2", address_2_edit_text.getText().toString());
+                addressReqData.put("city", city_edit_text.getText().toString());
+                addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
+                addressReqData.put("pincode", pincode_edit_text.getText().toString());
+                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_shipping_address");
+
                 String []shipping_address_edited = { address_1_edit_text.getText().toString(),
                         address_2_edit_text.getText().toString(),
                         city_edit_text.getText().toString(),
@@ -259,6 +341,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         // Handel Same Address
         same_address_checked.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b) {
+                Shipping_Address_ID = Billing_Address_ID;
                 StringBuilder temp = new StringBuilder();
                 int iter = 0;
                 for (String item : billing_address_text_input_data) {
@@ -273,9 +356,23 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
 
         // Bill Section
         next_invoice_button.setOnClickListener(e -> {
-            Intent intent = new Intent(getApplicationContext(), Create_Invoice.class);
-            intent.putExtra("INVOICE_SERIAL_NO_CREATE", "SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO"));
-            startActivity(intent);
+
+            // Create Invoice
+            Map<String, String> data = new HashMap<>();
+            data.put("type", typeRequestData.get("type").toString());
+            data.put("name", invoice_to_text.getText().toString());
+            data.put("mobile_number", mobile_no_text.getText().toString());
+            data.put("customer_type", customer_type_options.getText().toString());
+            data.put("doc_type", "0");
+            data.put("doc_no", aadhaar_no_text.getText().toString());
+            data.put("business_id", business_id);
+            data.put("location_id", location_id);
+            data.put("payment_mode", "online");
+            data.put("billing_address_id", Billing_Address_ID + "");
+            data.put("shipping_address_id", Shipping_Address_ID + "");
+            data.put("id", Invoice_ID + "");
+            req(data, "/api/editInvoice", "Invoice updated successfully.", "update_invoice_with_data");
+
         });
     }
 
@@ -300,5 +397,129 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         // You can use a library like ThreeTenABP or SimpleDateFormat to format the date
         // Here's a basic example using String formatting (limited options)
         return day + " " + monthNames.get(month) + " " + year; // Month is 0-indexed
+    }
+
+    void req(Map<String, String> data, String api_endpoint, String condition, String context) {
+        setLoading(true, "", context);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, base_url + api_endpoint,
+                response -> {
+                    // Handle successful response
+                    try {
+                        // Convert response string to JSON object
+                        JSONObject jsonResponse = new JSONObject(response);
+                        // Now you can access data from the JSON object
+                        String message = jsonResponse.getString("message");
+
+                        if(message.equals(condition)) {
+                            setLoading(false, response, context);
+                        }else {
+                            // Handle the data accordingly
+                            Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
+                            setLoading(false, "", context);
+                        }
+                    } catch (JSONException e) {
+                        // Handle JSON parsing error
+                        Toast.makeText(getApplicationContext(), "Error: API response error!", Toast.LENGTH_SHORT).show();
+                        setLoading(false, "", context);
+                    }
+                },
+                error -> {
+                    // Handle error
+                    Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_LONG).show();
+                    setLoading(false, "", context);
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Construct form data
+                return data;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                // You can add headers here if needed
+                Map<String, String> headers = new HashMap<>();
+                // Add headers if needed
+                return headers;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(getApplicationContext()).add(stringRequest);
+    }
+
+    private void setLoading(boolean loading, String response, String context) {
+        if(context.equals("first_time_invoice_create") && loading) {
+            invoice_serial_no.setText("SN. Wait...");
+        }
+        if(context.equals("first_time_invoice_create") && !loading) {
+            if(response.length() >= 10) {
+                try {
+                    JSONObject myRes;
+                    myRes = new JSONObject(response);
+                    Invoice_ID = myRes.getJSONObject("data").getInt("id");
+                    Serial_NO = myRes.getJSONObject("data").getInt("serial_no");
+                    invoice_serial_no.setText("SN. " + Serial_NO);
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        if(context.equals("update_invoice_with_data") && loading) {
+            next_invoice_button.setText("Wait....");
+            next_invoice_button.setEnabled(false);
+        }
+        if(context.equals("update_invoice_with_data") && !loading) {
+            if(response.length() >= 10) {
+                next_invoice_button.setText("Next");
+                next_invoice_button.setEnabled(true);
+                if(Billing_Address_ID == 0 || Shipping_Address_ID == 0) {
+                    Toast.makeText(getApplicationContext(), "Add address first.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(getApplicationContext(), Create_Invoice.class);
+                intent.putExtra("INVOICE_ID_CREATE", Invoice_ID + "");
+                intent.putExtra("INVOICE_SERIAL_NO_CREATE", Serial_NO + "");
+                startActivity(intent);
+            }else {
+                Toast.makeText(getApplicationContext(), "Failed to Update Invoice!", Toast.LENGTH_SHORT).show();
+                next_invoice_button.setText("Next");
+                next_invoice_button.setEnabled(true);
+            }
+        }
+        if(context.equals("add_billing_address") && loading) {
+            next_invoice_button.setText("Wait....");
+            next_invoice_button.setEnabled(false);
+        }
+        if(context.equals("add_billing_address") && !loading) {
+            if(response.length() >= 10) {
+                try {
+                    JSONObject myRes;
+                    myRes = new JSONObject(response);
+                    Billing_Address_ID = myRes.getJSONObject("data").getInt("id");
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            next_invoice_button.setText("Next");
+            next_invoice_button.setEnabled(true);
+        }
+        if(context.equals("add_shipping_address") && loading) {
+            next_invoice_button.setText("Wait....");
+            next_invoice_button.setEnabled(false);
+        }
+        if(context.equals("add_shipping_address") && !loading) {
+            if(response.length() >= 10) {
+                try {
+                    JSONObject myRes;
+                    myRes = new JSONObject(response);
+                    Shipping_Address_ID = myRes.getJSONObject("data").getInt("id");
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            next_invoice_button.setText("Next");
+            next_invoice_button.setEnabled(true);
+        }
     }
 }

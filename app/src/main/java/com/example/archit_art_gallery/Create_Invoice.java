@@ -60,7 +60,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
 
         // Manage Intent data
         invoice_serial_no = findViewById(R.id.invoice_serial_no);
-        invoice_serial_no.setText(getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE"));
+        invoice_serial_no.setText("SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE"));
 
         // Manage BILLS and GST INFO and data
         total_ex_gst = findViewById(R.id.total_ex_gst);
