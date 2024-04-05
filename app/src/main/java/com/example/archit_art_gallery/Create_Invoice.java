@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +17,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Create_Invoice extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -49,9 +61,13 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
     // BILL
     TextView total_ex_gst, delhi_gst_cost, cgst_gst_cost, igst_gst_cost, total_with_gst, invoice_serial_no;
     private int total_ex_gst_amount;
+    SwitchMaterial is_gst_product;
 
     // Mange Payment Option and load
     ConstraintLayout bottom_payment_mode_option;
+    final static String base_url = "https://api.architartgallery.in/public";
+    String Invoice_ID, Serial_NO;
+    JSONObject Invoice_Old_Date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +77,9 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         // Manage Intent data
         invoice_serial_no = findViewById(R.id.invoice_serial_no);
         invoice_serial_no.setText("SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE"));
+        Serial_NO = getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE");
+        Invoice_ID = getIntent().getStringExtra("INVOICE_ID_CREATE");
+//        req(new HashMap<>(), "/api/getDetailedInvoice/" + Invoice_ID, "Invoice details retrieved successfully.", "fetch_old_item", "GET");
 
         // Manage BILLS and GST INFO and data
         total_ex_gst = findViewById(R.id.total_ex_gst);
@@ -92,6 +111,39 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         recyclerView.setAdapter(ItemsAdaptor);
         no_item_added = findViewById(R.id.no_item_added);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if(Invoice_Old_Date != null) {
+            try {
+                JSONObject dataArray = Invoice_Old_Date.getJSONObject("data");
+                JSONArray itemsArray = dataArray.getJSONArray("items");
+
+                for (int i = 0; i < itemsArray.length(); i++) {
+                    JSONObject itemObject = itemsArray.getJSONObject(i);
+                    JSONObject product = itemObject.getJSONObject("product");
+                    itemsDB.add(new ItemsData(product.getString("name"),
+                            Integer.parseInt(product.getString("hsn_code")),
+                            itemObject.getInt("price_of_one"),
+                            itemObject.getInt("quantity")));
+                    total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
+                    total_ex_gst.setText("₹" + total_ex_gst_amount);
+                    double dgst = total_ex_gst_amount * 0.09;
+                    double cgst = total_ex_gst_amount * 0.09;
+                    double igst = dgst + cgst;
+                    if(!is_gst_product.isChecked()) {
+                        dgst = dgst - itemObject.getInt("price_of_one") * itemObject.getInt("quantity") * 0.09;
+                        cgst = cgst - itemObject.getInt("price_of_one") * itemObject.getInt("quantity") * 0.09;
+                        igst = dgst + cgst;
+                    }
+                    delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
+                    cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
+                    igst_gst_cost.setText("₹" + String.format("%.2f", igst));
+                    total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + igst)));
+                }
+                ItemsAdaptor.notifyDataSetChanged();
+            }catch (JSONException e) {
+                //
+            }
+        }
 
         today_date_piker = findViewById(R.id.today_date_piker);
         invoice_pike_date = findViewById(R.id.invoice_pike_date);
@@ -130,6 +182,9 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
             quantity = view.findViewById(R.id.new_item_quantity);
             item_add_button = view.findViewById(R.id.new_add_item_button);
 
+            // is_gst button
+            is_gst_product = view.findViewById(R.id.is_gst_product);
+
             item_add_button.setOnClickListener(ev -> {
                 try {
                     // Mange Total and GST INFO
@@ -137,11 +192,16 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                     total_ex_gst.setText("₹" + total_ex_gst_amount);
                     double dgst = total_ex_gst_amount * 0.09;
                     double cgst = total_ex_gst_amount * 0.09;
-                    double igst = total_ex_gst_amount * 0.18;
+                    double igst = dgst + cgst;
+                    if(!is_gst_product.isChecked()) {
+                        dgst = dgst - Integer.parseInt(rate.getText().toString()) * Integer.parseInt(quantity.getText().toString()) * 0.09;
+                        cgst = cgst - Integer.parseInt(rate.getText().toString()) * Integer.parseInt(quantity.getText().toString()) * 0.09;
+                        igst = dgst + cgst;
+                    }
                     delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
                     cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
                     igst_gst_cost.setText("₹" + String.format("%.2f", igst));
-                    total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + dgst + cgst + igst)));
+                    total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + igst)));
 
                     // Mange the item data
                     itemsDB.add(new ItemsData(item_name.getText().toString(),
@@ -150,6 +210,16 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                             Integer.parseInt(quantity.getText().toString())));
                     Toast.makeText(getApplicationContext(), "Item added!", Toast.LENGTH_SHORT).show();
                     ItemsAdaptor.notifyDataSetChanged();
+
+                    Map<String, String> reqData = new HashMap<>();
+                    reqData.put("invoice_id", Invoice_ID);
+                    reqData.put("hsn_code", has_code.getText().toString());
+                    reqData.put("name", item_name.getText().toString());
+                    reqData.put("price", rate.getText().toString());
+                    reqData.put("quantity", quantity.getText().toString());
+                    reqData.put("is_gst", is_gst_product.isChecked() ? "1" : "0");
+                    req(reqData, "/api/addProduct", "Product Added successfully.", "add_new_item", "POST");
+
                     sheetDialog.hide();
 
                     // Mange item show or not
@@ -195,5 +265,88 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         // You can use a library like ThreeTenABP or SimpleDateFormat to format the date
         // Here's a basic example using String formatting (limited options)
         return day + " " + monthNames.get(month) + " " + year; // Month is 0-indexed
+    }
+
+    void req(Map<String, String> data, String api_endpoint, String condition, String context, String method) {
+        setLoading(true, "", context);
+        StringRequest stringRequest = new StringRequest(method.equals("GET") ? Request.Method.GET : Request.Method.POST, base_url + api_endpoint,
+                response -> {
+                    // Handle successful response
+                    try {
+                        // Convert response string to JSON object
+                        JSONObject jsonResponse = new JSONObject(response);
+                        // Now you can access data from the JSON object
+                        String message = jsonResponse.getString("message");
+
+                        if(message.equals(condition)) {
+                            setLoading(false, response, context);
+                        }else {
+                            // Handle the data accordingly
+                            Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
+                            setLoading(false, "", context);
+                        }
+                    } catch (JSONException e) {
+                        // Handle JSON parsing error
+                        Toast.makeText(getApplicationContext(), "Error: API response error!", Toast.LENGTH_SHORT).show();
+                        setLoading(false, "", context);
+                    }
+                },
+                error -> {
+                    // Handle error
+                    Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_LONG).show();
+                    setLoading(false, "", context);
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Construct form data
+                return data;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                // You can add headers here if needed
+                Map<String, String> headers = new HashMap<>();
+                // Add headers if needed
+                return headers;
+            }
+        };
+
+        // Add the request to the Volley request queue
+        Volley.newRequestQueue(getApplicationContext()).add(stringRequest);
+    }
+
+    private void setLoading(boolean loading, String response, String context) {
+        if(context.equals("add_new_item") && loading) {
+            item_add_button.setText("SN. Wait...");
+            item_add_button.setEnabled(false);
+        }
+        if(context.equals("add_new_item") && !loading) {
+            item_add_button.setText("Add");
+            item_add_button.setEnabled(true);
+            if(response.length() >= 10) {
+                try {
+                    JSONObject myRes;
+                    myRes = new JSONObject(response);
+//                    Invoice_ID = myRes.getJSONObject("data").getInt("id");
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        if(context.equals("fetch_old_item") && loading) {
+            add_items.setText("SN. Wait...");
+            add_items.setEnabled(false);
+        }
+        if(context.equals("fetch_old_item") && !loading) {
+            add_items.setText("Add Items");
+            add_items.setEnabled(true);
+            if(response.length() >= 10) {
+                try {
+                    Invoice_Old_Date = new JSONObject(response);
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

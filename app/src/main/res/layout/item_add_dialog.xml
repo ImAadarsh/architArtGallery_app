@@ -130,10 +130,19 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:layout_marginTop="10dp"
+            android:textAlignment="textEnd"
+            android:id="@+id/is_gst_product"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Is GST Product"
+            android:checked="true" />
+
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="55dp"
         android:id="@+id/new_add_item_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
