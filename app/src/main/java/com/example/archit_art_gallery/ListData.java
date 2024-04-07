@@ -5,11 +5,19 @@ public class ListData {
     String invoice_user_name;
     String invoice_data;
     int invoice_amount;
+    String type;
 
     public ListData(String invoice_user_name, String invoice_data, int invoice_amount) {
         this.invoice_user_name = invoice_user_name;
         this.invoice_data = invoice_data;
         this.invoice_amount = invoice_amount;
+        this.type = "normal";
+    }
+    public ListData(String invoice_user_name, String invoice_data, int invoice_amount, String type) {
+        this.invoice_user_name = invoice_user_name;
+        this.invoice_data = invoice_data;
+        this.invoice_amount = invoice_amount;
+        this.type = type;
     }
 
     public String getInvoice_user_name() {
@@ -34,5 +42,13 @@ public class ListData {
 
     public void setInvoice_amount(int invoice_amount) {
         this.invoice_amount = invoice_amount;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

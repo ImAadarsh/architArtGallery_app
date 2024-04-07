@@ -77,34 +77,38 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
     int Serial_NO = 0;
     int Billing_Address_ID = 0;
     int Shipping_Address_ID = 0;
+    String bill_type = "";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_page);
-
         Map<String, String> typeRequestData = new HashMap<>();
-        AlertDialog.Builder builder = new AlertDialog.Builder(InvoicePage.this);
-        // set title
-        builder.setTitle("Choose One of them?");
-        // set message
-        builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
-        // set two buttons.
-        builder.setPositiveButton("Performa", (dialogInterface, i) -> {
-            typeRequestData.put("type", "performa");
-            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
-        });
-        builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
-            typeRequestData.put("type", "dummy");
-            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
-        });
-        builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
-            typeRequestData.put("type", "normal");
-            req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
-        });
-        // show the alert.
-        builder.show();
+        typeRequestData.put("type", "normal");
+        if(!(getIntent().getStringExtra("INVOICE_SERIAL_NO").length() >= 1)) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(InvoicePage.this);
+            // set title
+            builder.setTitle("Choose One of them?");
+            // set message
+            builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
+            // set two buttons.
+            builder.setPositiveButton("Performa", (dialogInterface, i) -> {
+                typeRequestData.put("type", "performa");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+            });
+            builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
+                typeRequestData.put("type", "dummy");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+            });
+            builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
+                typeRequestData.put("type", "normal");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+            });
+            // show the alert.
+            bill_type = typeRequestData.get("type");
+            builder.show();
+        }
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         phone = sharedpreferences.getString(PHONE_KEY, null);
@@ -480,6 +484,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 Intent intent = new Intent(getApplicationContext(), Create_Invoice.class);
                 intent.putExtra("INVOICE_ID_CREATE", Invoice_ID + "");
                 intent.putExtra("INVOICE_SERIAL_NO_CREATE", Serial_NO + "");
+                intent.putExtra("BILL_TYPE", bill_type + "");
                 startActivity(intent);
             }else {
                 Toast.makeText(getApplicationContext(), "Failed to Update Invoice!", Toast.LENGTH_SHORT).show();

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
     Button add_items;
 
     TextInputEditText item_name, has_code, rate, quantity;
-    MaterialButton item_add_button;
+    MaterialButton item_add_button, bill_cancel_btn, bill_create_btn;
 
     RecyclerView recyclerView;
     TextView no_item_added;
@@ -66,7 +67,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
     // Mange Payment Option and load
     ConstraintLayout bottom_payment_mode_option;
     final static String base_url = "https://api.architartgallery.in/public";
-    String Invoice_ID, Serial_NO;
+    String Invoice_ID, Serial_NO, Bill_Type;
     JSONObject Invoice_Old_Date;
 
     @Override
@@ -74,12 +75,25 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_invoice);
 
+        // bill manage button
+        bill_cancel_btn = findViewById(R.id.bill_cancel_btn);
+        bill_create_btn = findViewById(R.id.bill_create_btn);
+
         // Manage Intent data
         invoice_serial_no = findViewById(R.id.invoice_serial_no);
         invoice_serial_no.setText("SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE"));
         Serial_NO = getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE");
         Invoice_ID = getIntent().getStringExtra("INVOICE_ID_CREATE");
+        Bill_Type = getIntent().getStringExtra("BILL_TYPE");
 //        req(new HashMap<>(), "/api/getDetailedInvoice/" + Invoice_ID, "Invoice details retrieved successfully.", "fetch_old_item", "GET");
+
+        if(Bill_Type.equals("normal")) {
+            bill_create_btn.setText("Create Bill");
+        }else if(Bill_Type.equals("performa")) {
+            bill_create_btn.setText("Create Performa");
+        }else if(Bill_Type.equals("dummy")) {
+            bill_create_btn.setText("Create Dummy");
+        }
 
         // Manage BILLS and GST INFO and data
         total_ex_gst = findViewById(R.id.total_ex_gst);
@@ -241,6 +255,17 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
             cross_dialog.setOnClickListener(ev -> {
                 sheetDialog.hide();
             });
+        });
+
+        bill_cancel_btn.setOnClickListener(e -> {
+            Intent intent = new Intent(getApplicationContext(), Dashboard.class);
+            startActivity(intent);
+            finish();
+        });
+
+        bill_create_btn.setOnClickListener(e -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://invoice.architartgallery.in/invoice.html?invoiceid=" + Invoice_ID));
+            e.getContext().startActivity(intent);
         });
     }
 

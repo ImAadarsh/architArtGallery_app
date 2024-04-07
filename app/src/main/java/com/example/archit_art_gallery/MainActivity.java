@@ -1,7 +1,9 @@
 package com.example.archit_art_gallery;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private static int SPLASH_SCREEN = 1600;
     Animation topAnim;
     LinearLayout linearLayout;
+    int REQUEST_CODE = 2345;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout = findViewById(R.id.animation_layout);
 
         linearLayout.setAnimation(topAnim);
+        askPermission();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -33,5 +37,9 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }, SPLASH_SCREEN);
+    }
+
+    private  void askPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE);
     }
 }

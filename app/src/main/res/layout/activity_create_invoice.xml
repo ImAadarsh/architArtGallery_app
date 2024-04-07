@@ -308,6 +308,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/bill_cancel_btn"
             android:layout_marginTop="15dp"
             style="@style/Widget.Material3.Button.OutlinedButton"
             app:strokeColor="@color/primary_color"
@@ -315,7 +316,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:height="60dp"
-            android:text="Performa"
+            android:text="Cancel"
             app:cornerRadius="6dp"
             android:layout_weight="1"
             android:textSize="18sp"
@@ -323,6 +324,7 @@
             tools:layout_editor_absoluteY="30dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/bill_create_btn"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="8dp"
             android:layout_width="0dp"

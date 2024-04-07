@@ -36,6 +36,8 @@
     <string name="c_gst">CGST  @<font color="#0D99FF">9%</font></string>
     <string name="i_gst">IGST  @<font color="#0D99FF">18%</font></string>
     <string name="forget_string"><u>Update Profile ?</u></string>
+    <string name="demo_date"><u>07/04/2024</u></string>
+    <string name="notes_1"><u></u></string>
     <integer-array name="initial_slider_values">
         <item>0</item>
         <item>400</item>

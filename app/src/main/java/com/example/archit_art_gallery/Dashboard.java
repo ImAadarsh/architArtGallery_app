@@ -19,6 +19,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -36,6 +37,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,6 +81,7 @@ public class Dashboard extends AppCompatActivity {
     TextView report_profile_user_name, report_profile_user_role, menu_profile_user_name, menu_profile_user_role;
     Button update_profile;
     JSONObject jsonResponse = new JSONObject();
+    String Business_Id;
 
     final static String base_url = "https://api.architartgallery.in/public";
 
@@ -106,10 +109,24 @@ public class Dashboard extends AppCompatActivity {
         String selectedDate = formatDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
         total_actual_sale_date.setText(selectedDate);
 
-        dataArrayList.add(new ListData("Arun kumar : 12345678", "11 Jan", 400));
-        dataArrayList.add(new ListData("Archit Arrora : 123456789", "11 Jan", 400));
-        dataArrayList.add(new ListData("ABC : 123456711", "12 Jan", 200));
-        dataArrayList.add(new ListData("XYZ : 123456712", "13 Jan", 800));
+        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
+        phone = sharedpreferences.getString(PHONE_KEY, null);
+        password = sharedpreferences.getString(PASSWORD_KEY, null);
+        user_logged_in_data = sharedpreferences.getString(USER_LOGGED_IN_DATA_KEY, null);
+
+        try {
+            jsonResponse = new JSONObject(user_logged_in_data);
+            Business_Id = jsonResponse.getJSONObject("user").getInt("business_id") + "";
+            Toast.makeText(getApplicationContext(), "B : " + Business_Id, Toast.LENGTH_SHORT).show();
+            req(new HashMap<>(), "/api/getAllInvoices?business_id" + Business_Id, "Invoices retrieved successfully.", "fetch_invoice", "GET");
+        } catch (JSONException e) {
+            Toast.makeText(getApplicationContext(), "Response get to failed!", Toast.LENGTH_SHORT).show();
+        }
+
+//        dataArrayList.add(new ListData("Arun kumar : 12345678", "11 Jan", 400));
+//        dataArrayList.add(new ListData("Archit Arrora : 123456789", "11 Jan", 400));
+//        dataArrayList.add(new ListData("ABC : 123456711", "12 Jan", 200));
+//        dataArrayList.add(new ListData("XYZ : 123456712", "13 Jan", 800));
 
         recyclerView = findViewById(R.id.recycler_view);
         invoiceAdaptor = new ListAdapter(dataArrayList, this);
@@ -230,11 +247,6 @@ public class Dashboard extends AppCompatActivity {
         // Elements Initialize
         dashboard_invoice_search = findViewById(R.id.dashboard_invoice_search);
 
-        sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
-        phone = sharedpreferences.getString(PHONE_KEY, null);
-        password = sharedpreferences.getString(PASSWORD_KEY, null);
-        user_logged_in_data = sharedpreferences.getString(USER_LOGGED_IN_DATA_KEY, null);
-
         bottomNavigationBar = findViewById(R.id.bottom_navigation);
         // Default Select
         bottomNavigationBar.setSelectedItemId(R.id.add_inv);
@@ -320,7 +332,7 @@ public class Dashboard extends AppCompatActivity {
                     data.put("phone", finalPHONE);
                     data.put("password", profile_password.getText().toString());
                     data.put("name", my_profile_name_edit.getText().toString());
-                    req(data, "/api/updateprofile", "User is Updated sucessfully.");
+                    req(data, "/api/updateprofile", "User is Updated sucessfully.", "update_profile", "POST");
                 });
 
                 // Profile back button
@@ -477,9 +489,9 @@ public class Dashboard extends AppCompatActivity {
         return day + " " + myMonths.get(month) + " " + year;
     }
 
-    void req(Map<String, String> data, String api_endpoint, String condition) {
-        setProfileUpdateLoading(true, "");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, base_url + api_endpoint,
+    void req(Map<String, String> data, String api_endpoint, String condition, String context, String method) {
+        setProfileUpdateLoading(true, "", context);
+        StringRequest stringRequest = new StringRequest(method.equals("GET") ? Request.Method.GET : Request.Method.POST, base_url + api_endpoint,
                 response -> {
                     // Handle successful response
                     try {
@@ -489,23 +501,23 @@ public class Dashboard extends AppCompatActivity {
                         String message = jsonResponse.getString("message");
 
                         if(message.equals(condition)) {
-                            setProfileUpdateLoading(false, response);
+                            setProfileUpdateLoading(false, response, context);
                             Toast.makeText(getApplicationContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
                         }else {
                             // Handle the data accordingly
                             Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
-                            setProfileUpdateLoading(false, "");
+                            setProfileUpdateLoading(false, "", context);
                         }
                     } catch (JSONException e) {
                         // Handle JSON parsing error
                         Toast.makeText(getApplicationContext(), "Error: API response error!", Toast.LENGTH_SHORT).show();
-                        setProfileUpdateLoading(false, "");
+                        setProfileUpdateLoading(false, "", context);
                     }
                 },
                 error -> {
                     // Handle error
                     Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_LONG).show();
-                    setProfileUpdateLoading(false, "");
+                    setProfileUpdateLoading(false, "", context);
                 }) {
             @Override
             protected Map<String, String> getParams() {
@@ -526,27 +538,57 @@ public class Dashboard extends AppCompatActivity {
         Volley.newRequestQueue(getApplicationContext()).add(stringRequest);
     }
 
-    private void setProfileUpdateLoading(boolean loading, String response) {
-        if (loading) {
-            update_profile.setText("Wait....");
-            update_profile.setEnabled(false);
-        } else {
-            update_profile.setText("Update Profile ?");
-            update_profile.setEnabled(true);
-            if(response.length() >= 10) {
-                SharedPreferences.Editor editor = sharedpreferences.edit();
-                user_logged_in_data = response.replaceFirst("data", "user");
+    private void setProfileUpdateLoading(boolean loading, String response, String context) {
+        if(context.equals("update_profile")) {
+            if (loading) {
+                update_profile.setText("Wait....");
+                update_profile.setEnabled(false);
+            } else {
+                update_profile.setText("Update Profile ?");
+                update_profile.setEnabled(true);
+                if(response.length() >= 10) {
+                    SharedPreferences.Editor editor = sharedpreferences.edit();
+                    user_logged_in_data = response.replaceFirst("data", "user");
+                    try {
+                        jsonResponse = new JSONObject(response.replaceFirst("data", "user"));
+                        String name = jsonResponse.getJSONObject("user").getString("name");
+                        my_profile_name_edit.setText(name);
+                        report_profile_user_name.setText(name);
+                        menu_profile_user_name.setText(name);
+                        profile_password.setText(jsonResponse.getJSONObject("user").getString("passcode"));
+                        editor.putString(PHONE_KEY, jsonResponse.getJSONObject("user").getString("phone"));
+                        editor.putString(PASSWORD_KEY, jsonResponse.getJSONObject("user").getString("passcode"));
+                        editor.putString(USER_LOGGED_IN_DATA_KEY, user_logged_in_data);
+                        editor.apply();
+                    } catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }
+        if(context.equals("fetch_invoice") && !loading) {
+            if(response.length() >= 10){
                 try {
-                    jsonResponse = new JSONObject(response.replaceFirst("data", "user"));
-                    String name = jsonResponse.getJSONObject("user").getString("name");
-                    my_profile_name_edit.setText(name);
-                    report_profile_user_name.setText(name);
-                    menu_profile_user_name.setText(name);
-                    profile_password.setText(jsonResponse.getJSONObject("user").getString("passcode"));
-                    editor.putString(PHONE_KEY, jsonResponse.getJSONObject("user").getString("phone"));
-                    editor.putString(PASSWORD_KEY, jsonResponse.getJSONObject("user").getString("passcode"));
-                    editor.putString(USER_LOGGED_IN_DATA_KEY, user_logged_in_data);
-                    editor.apply();
+                    JSONObject res;
+                    res = new JSONObject(response);
+                    JSONArray items = res.getJSONArray("data");
+                    for(int i = 0; i < items.length(); i++ ) {
+                        JSONObject item = items.getJSONObject(i);
+                        String name = item.getString("name");
+                        String id = item.getString("id");
+                        String date = item.getString("invoice_date");
+                        int cost = 0;
+                        if(item.isNull("items_sum_price_of_all")) {
+                            cost = 0;
+                        }else {
+                            cost = item.getInt("items_sum_price_of_all");
+                        }
+                        if(!name.equals("null") && !id.equals("null")) {
+                            Log.d("ABC", name);
+                            dataArrayList.add(new ListData(name + " : " + id, date.equals("null") ? "No Date" : date, cost));
+                        }
+                    }
+                    invoiceAdaptor.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
