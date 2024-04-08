@@ -69,6 +69,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
     final static String base_url = "https://api.architartgallery.in/public";
     String Invoice_ID, Serial_NO, Bill_Type;
     JSONObject Invoice_Old_Date;
+    ArrayList<ItemsData> itemsDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         Serial_NO = getIntent().getStringExtra("INVOICE_SERIAL_NO_CREATE");
         Invoice_ID = getIntent().getStringExtra("INVOICE_ID_CREATE");
         Bill_Type = getIntent().getStringExtra("BILL_TYPE");
-//        req(new HashMap<>(), "/api/getDetailedInvoice/" + Invoice_ID, "Invoice details retrieved successfully.", "fetch_old_item", "GET");
+        req(new HashMap<>(), "/api/getDetailedInvoice/" + Invoice_ID, "Invoice details retrieved successfully.", "fetch_old_item", "GET");
 
         if(Bill_Type.equals("normal")) {
             bill_create_btn.setText("Create Bill");
@@ -117,7 +118,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         monthNames.add("December");
 
         // Manage items data
-        ArrayList<ItemsData> itemsDB = new ArrayList<>();
+        itemsDB = new ArrayList<>();
 
         // Manage Recycler Items view
         recyclerView = findViewById(R.id.recycler_view_items);
@@ -135,7 +136,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                     JSONObject itemObject = itemsArray.getJSONObject(i);
                     JSONObject product = itemObject.getJSONObject("product");
                     itemsDB.add(new ItemsData(product.getString("name"),
-                            Integer.parseInt(product.getString("hsn_code")),
+                            product.getString("hsn_code"),
                             itemObject.getInt("price_of_one"),
                             itemObject.getInt("quantity")));
                     total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
@@ -219,7 +220,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
 
                     // Mange the item data
                     itemsDB.add(new ItemsData(item_name.getText().toString(),
-                            Integer.parseInt(has_code.getText().toString()),
+                            has_code.getText().toString(),
                             Integer.parseInt(rate.getText().toString()),
                             Integer.parseInt(quantity.getText().toString())));
                     Toast.makeText(getApplicationContext(), "Item added!", Toast.LENGTH_SHORT).show();
@@ -358,16 +359,44 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                 }
             }
         }
-        if(context.equals("fetch_old_item") && loading) {
-            add_items.setText("SN. Wait...");
-            add_items.setEnabled(false);
-        }
         if(context.equals("fetch_old_item") && !loading) {
-            add_items.setText("Add Items");
-            add_items.setEnabled(true);
             if(response.length() >= 10) {
                 try {
                     Invoice_Old_Date = new JSONObject(response);
+                    try {
+                        JSONObject dataArray = Invoice_Old_Date.getJSONObject("data");
+                        JSONArray itemsArray = dataArray.getJSONArray("items");
+
+                        for (int i = 0; i < itemsArray.length(); i++) {
+                            JSONObject itemObject = itemsArray.getJSONObject(i);
+                            JSONObject product = itemObject.getJSONObject("product");
+                            itemsDB.add(new ItemsData(product.getString("name"),
+                                    product.getString("hsn_code"),
+                                    itemObject.getInt("price_of_one"),
+                                    itemObject.getInt("quantity")));
+                            total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
+                            total_ex_gst.setText("₹" + total_ex_gst_amount);
+                            double dgst = total_ex_gst_amount * 0.09;
+                            double cgst = total_ex_gst_amount * 0.09;
+                            double igst = dgst + cgst;
+                            delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
+                            cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
+                            igst_gst_cost.setText("₹" + String.format("%.2f", igst));
+                            total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + igst)));
+                        }
+                        if (itemsDB.isEmpty()) {
+                            bottom_payment_mode_option.setVisibility(View.INVISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                            no_item_added.setVisibility(View.VISIBLE);
+                        } else {
+                            bottom_payment_mode_option.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            no_item_added.setVisibility(View.GONE);
+                        }
+                        ItemsAdaptor.notifyDataSetChanged();
+                    }catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }

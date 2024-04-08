@@ -95,7 +95,7 @@
                     android:id="@+id/new_item_has_code"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:inputType="number" />
+                    android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

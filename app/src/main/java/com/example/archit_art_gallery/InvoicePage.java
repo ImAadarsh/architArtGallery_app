@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -29,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,7 +80,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
     int Billing_Address_ID = 0;
     int Shipping_Address_ID = 0;
     String bill_type = "";
-
+    String[] billing_address_text_input_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,10 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         setContentView(R.layout.activity_invoice_page);
         Map<String, String> typeRequestData = new HashMap<>();
         typeRequestData.put("type", "normal");
+        if(getIntent().hasExtra("INVOICE_ID")) {
+            Invoice_ID = Integer.parseInt(getIntent().getStringExtra("INVOICE_ID"));
+            Serial_NO = Integer.parseInt(getIntent().getStringExtra("INVOICE_SERIAL_NO"));
+        }
         if(!(getIntent().getStringExtra("INVOICE_SERIAL_NO").length() >= 1)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(InvoicePage.this);
             // set title
@@ -95,15 +101,15 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             // set two buttons.
             builder.setPositiveButton("Performa", (dialogInterface, i) -> {
                 typeRequestData.put("type", "performa");
-                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
                 typeRequestData.put("type", "dummy");
-                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
                 typeRequestData.put("type", "normal");
-                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create");
+                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             // show the alert.
             bill_type = typeRequestData.get("type");
@@ -164,7 +170,10 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         invoice_serial_no.setText("SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO"));
         invoice_to_text.setText(getIntent().getStringExtra("INVOICE_TO"));
         aadhaar_no_text.setText(getIntent().getStringExtra("AADHAAR_NUMBER"));
-        String[] billing_address_text_input_data = getIntent().getStringArrayExtra("BILLING_ADDRESS");
+        String billing_address_id = getIntent().getStringExtra("BILLING_ADDRESS");
+        Billing_Address_ID = Integer.parseInt(billing_address_id);
+        req(new HashMap<>(), "/api/getAddressByInvoiceId?invoice_id=" + Invoice_ID, "Address retrieved successfully.", "fetch_address", "GET");
+        billing_address_text_input_data = new String[]{"", "", "", "", ""};
         StringBuilder stringBuilder = new StringBuilder();
         int nextLineNeed = 0;
         for (String item : billing_address_text_input_data) {
@@ -176,7 +185,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         }
         String concatenatedString = stringBuilder.toString();
         billing_address_text.setText(concatenatedString);
-        String[] shipping_address_text_input_data = getIntent().getStringArrayExtra("SHIPPING_ADDRESS");
+        String shipping_address_Id = getIntent().getStringExtra("SHIPPING_ADDRESS");
+        Shipping_Address_ID = Integer.parseInt(shipping_address_Id);
+        String[] shipping_address_text_input_data = {"", "", "", "", ""};
         StringBuilder stringShippBuilder = new StringBuilder();
         int nextLineNeedShip = 0;
         for (String item : shipping_address_text_input_data) {
@@ -240,7 +251,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 addressReqData.put("city", city_edit_text.getText().toString());
                 addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
                 addressReqData.put("pincode", pincode_edit_text.getText().toString());
-                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_billing_address");
+                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_billing_address", "POST");
 
 
                 String []billing_address_edited = { address_1_edit_text.getText().toString(),
@@ -311,7 +322,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 addressReqData.put("city", city_edit_text.getText().toString());
                 addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
                 addressReqData.put("pincode", pincode_edit_text.getText().toString());
-                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_shipping_address");
+                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_shipping_address", "POST");
 
                 String []shipping_address_edited = { address_1_edit_text.getText().toString(),
                         address_2_edit_text.getText().toString(),
@@ -375,7 +386,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             data.put("billing_address_id", Billing_Address_ID + "");
             data.put("shipping_address_id", Shipping_Address_ID + "");
             data.put("id", Invoice_ID + "");
-            req(data, "/api/editInvoice", "Invoice updated successfully.", "update_invoice_with_data");
+            req(data, "/api/editInvoice", "Invoice updated successfully.", "update_invoice_with_data", "POST");
 
         });
     }
@@ -403,9 +414,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         return day + " " + monthNames.get(month) + " " + year; // Month is 0-indexed
     }
 
-    void req(Map<String, String> data, String api_endpoint, String condition, String context) {
+    void req(Map<String, String> data, String api_endpoint, String condition, String context, String method) {
         setLoading(true, "", context);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, base_url + api_endpoint,
+        StringRequest stringRequest = new StringRequest(method.equals("GET") ? Request.Method.GET : Request.Method.POST, base_url + api_endpoint,
                 response -> {
                     // Handle successful response
                     try {
@@ -519,6 +530,78 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                     JSONObject myRes;
                     myRes = new JSONObject(response);
                     Shipping_Address_ID = myRes.getJSONObject("data").getInt("id");
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+            next_invoice_button.setText("Next");
+            next_invoice_button.setEnabled(true);
+        }
+        if(context.equals("fetch_address") && loading) {
+            next_invoice_button.setText("Wait....");
+            next_invoice_button.setEnabled(false);
+            billing_address_text.setText("Wait...");
+            shipping_address_text.setText("Wait...");
+        }
+        if(context.equals("fetch_address") && !loading) {
+            if(response.length() >= 10) {
+                try {
+                    JSONObject myFRes;
+                    myFRes = new JSONObject(response);
+                    JSONArray jArray = myFRes.getJSONArray("data");
+                    JSONObject myResA1 = jArray.getJSONObject(0);
+                    String add1 = myResA1.getString("address_1");
+                    String add2 = myResA1.getString("address_2");
+                    String city = myResA1.getString("city");
+                    String state = myResA1.getString("state");
+                    String pincode = myResA1.getString("pincode");
+                    billing_address_text_input_data = new String[]{add1, add2, city, state, pincode};
+                    StringBuilder stringBuilder = new StringBuilder();
+                    int nextLineNeed = 0;
+                    for (String item : billing_address_text_input_data) {
+                        if(item.length() >= 1) {
+                            stringBuilder.append(item).append(", ");
+                            if(nextLineNeed == 2) stringBuilder.append("\n");
+                            nextLineNeed += 1;
+                        }
+                    }
+                    String concatenatedString = stringBuilder.toString();
+                    billing_address_text.setText(concatenatedString);
+
+                    if(jArray.length() >= 2) {
+                        JSONObject myResA2 = jArray.getJSONObject(1);
+                        String add1_2 = myResA2.getString("address_1");
+                        String add2_2 = myResA2.getString("address_2");
+                        String city_2 = myResA2.getString("city");
+                        String state_2 = myResA2.getString("state");
+                        String pincode_2 = myResA2.getString("pincode");
+                        String[] shipping_address_text_input_data = {add1_2, add2_2, city_2, state_2, pincode_2};
+                        StringBuilder stringShippBuilder = new StringBuilder();
+                        int nextLineNeedShip = 0;
+                        for (String item : shipping_address_text_input_data) {
+                            if(item.length() >= 1) {
+                                stringShippBuilder.append(item).append(", ");
+                                if(nextLineNeedShip == 2) stringShippBuilder.append("\n");
+                                nextLineNeedShip += 1;
+                            }
+                        }
+                        String concatenatedString2 = stringShippBuilder.toString();
+                        shipping_address_text.setText(concatenatedString2);
+                    }else {
+                        String[] shipping_address_text_input_data = {add1, add2, city, state, pincode};
+                        StringBuilder stringShippBuilder = new StringBuilder();
+                        int nextLineNeedShip = 0;
+                        for (String item : shipping_address_text_input_data) {
+                            if(item.length() >= 1) {
+                                stringShippBuilder.append(item).append(", ");
+                                if(nextLineNeedShip == 2) stringShippBuilder.append("\n");
+                                nextLineNeedShip += 1;
+                            }
+                        }
+                        String concatenatedString2 = stringShippBuilder.toString();
+                        shipping_address_text.setText(concatenatedString2);
+                    }
+
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }

@@ -61,23 +61,20 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.InvoiceViewHol
             invoice_amount = itemView.findViewById(R.id.invoice_amount);
             invoice_date = itemView.findViewById(R.id.invoice_date);
 
-
-            String[] billing_address = {"Add1", "Add2", "City", "Madhya Pradesh", "472001"};
-            String[] shipping_address = {"Add1", "Add2", "City", "Madhya Pradesh", "472001"};
-
             itemView.setOnClickListener(e -> {
                 int pos = getAdapterPosition();
 
                 if(pos != RecyclerView.NO_POSITION) {
                     Intent invoice_row_intent = new Intent(context, InvoicePage.class);
-                    invoice_row_intent.putExtra("INVOICE_SERIAL_NO", invoice_user_name.getText().toString().split(" : ", 2)[1]);
-                    invoice_row_intent.putExtra("INVOICE_TO", invoice_user_name.getText().toString().split(" : ", 2)[0]);
-                    invoice_row_intent.putExtra("CUSTOMER_TYPE", "Hotel");
-                    invoice_row_intent.putExtra("AADHAAR_NUMBER", "1234567893216");
-                    invoice_row_intent.putExtra("BILLING_ADDRESS", billing_address);
-                    invoice_row_intent.putExtra("SHIPPING_ADDRESS", shipping_address);
-                    invoice_row_intent.putExtra("BOTH_ADDRESS_IS_SAME", Arrays.equals(billing_address, shipping_address));
-                    invoice_row_intent.putExtra("MOBILE_NUMBER", "+91 8821000532");
+                    invoice_row_intent.putExtra("INVOICE_ID", invoiceList.get(pos).invoice_id);
+                    invoice_row_intent.putExtra("INVOICE_SERIAL_NO", invoiceList.get(pos).invoice_sn);
+                    invoice_row_intent.putExtra("INVOICE_TO", invoiceList.get(pos).invoice_user_name);
+                    invoice_row_intent.putExtra("CUSTOMER_TYPE", invoiceList.get(pos).customer_type);
+                    invoice_row_intent.putExtra("AADHAAR_NUMBER", invoiceList.get(pos).aadhaar_number);
+                    invoice_row_intent.putExtra("BILLING_ADDRESS", invoiceList.get(pos).billing_address);
+                    invoice_row_intent.putExtra("SHIPPING_ADDRESS", invoiceList.get(pos).shipping_address);
+                    invoice_row_intent.putExtra("BOTH_ADDRESS_IS_SAME", invoiceList.get(pos).billing_address == invoiceList.get(pos).shipping_address);
+                    invoice_row_intent.putExtra("MOBILE_NUMBER", invoiceList.get(pos).mobile_no);
                     context.startActivity(invoice_row_intent);
                 }
             });

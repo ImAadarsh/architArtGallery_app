@@ -8,11 +8,11 @@ import androidx.annotation.Nullable;
 
 public class ItemsData {
     String COLUMN_NAME;
-    int COLUMN_HAS_CODE;
+    String COLUMN_HAS_CODE;
     int COLUMN_RATE;
     int COLUMN_QUANTITY;
 
-    public ItemsData(String name, int has, int rate, int qty) {
+    public ItemsData(String name, String has, int rate, int qty) {
         this.COLUMN_NAME = name;
         this.COLUMN_HAS_CODE = has;
         this.COLUMN_RATE = rate;
@@ -21,7 +21,7 @@ public class ItemsData {
 
     public ItemsData() {
         this.COLUMN_NAME = "";
-        this.COLUMN_HAS_CODE = 0;
+        this.COLUMN_HAS_CODE = "";
         this.COLUMN_RATE = 0;
         this.COLUMN_QUANTITY = 0;
     }
@@ -34,11 +34,11 @@ public class ItemsData {
         this.COLUMN_NAME = COLUMN_NAME;
     }
 
-    public int getCOLUMN_HAS_CODE() {
+    public String getCOLUMN_HAS_CODE() {
         return COLUMN_HAS_CODE;
     }
 
-    public void setCOLUMN_HAS_CODE(int COLUMN_HAS_CODE) {
+    public void setCOLUMN_HAS_CODE(String COLUMN_HAS_CODE) {
         this.COLUMN_HAS_CODE = COLUMN_HAS_CODE;
     }
 

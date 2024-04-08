@@ -117,16 +117,10 @@ public class Dashboard extends AppCompatActivity {
         try {
             jsonResponse = new JSONObject(user_logged_in_data);
             Business_Id = jsonResponse.getJSONObject("user").getInt("business_id") + "";
-            Toast.makeText(getApplicationContext(), "B : " + Business_Id, Toast.LENGTH_SHORT).show();
             req(new HashMap<>(), "/api/getAllInvoices?business_id" + Business_Id, "Invoices retrieved successfully.", "fetch_invoice", "GET");
         } catch (JSONException e) {
             Toast.makeText(getApplicationContext(), "Response get to failed!", Toast.LENGTH_SHORT).show();
         }
-
-//        dataArrayList.add(new ListData("Arun kumar : 12345678", "11 Jan", 400));
-//        dataArrayList.add(new ListData("Archit Arrora : 123456789", "11 Jan", 400));
-//        dataArrayList.add(new ListData("ABC : 123456711", "12 Jan", 200));
-//        dataArrayList.add(new ListData("XYZ : 123456712", "13 Jan", 800));
 
         recyclerView = findViewById(R.id.recycler_view);
         invoiceAdaptor = new ListAdapter(dataArrayList, this);
@@ -308,18 +302,15 @@ public class Dashboard extends AppCompatActivity {
             }
             if(item.getTitle().equals("Add Invoices")) {
                 // <First_address, Second_address, City, State, Pin-code(6 digit)>
-                String[] billing_address = {"", "", "", "", ""};
-                String[] shipping_address = {"", "", "", "", ""};
                 Intent add_invoice = new Intent(getApplicationContext(), InvoicePage.class);
-
                 add_invoice.putExtra("INVOICE_SERIAL_NO", "");
                 add_invoice.putExtra("INVOICE_TO", "");
                 add_invoice.putExtra("CUSTOMER_TYPE", "");
                 add_invoice.putExtra("AADHAAR_NUMBER", "");
-                add_invoice.putExtra("BILLING_ADDRESS", billing_address);
-                add_invoice.putExtra("SHIPPING_ADDRESS", shipping_address);
-                add_invoice.putExtra("BOTH_ADDRESS_IS_SAME", Arrays.equals(billing_address, shipping_address));
-                add_invoice.putExtra("MOBILE_NUMBER", "+91 8821000532");
+                add_invoice.putExtra("BILLING_ADDRESS", "0");
+                add_invoice.putExtra("SHIPPING_ADDRESS", "0");
+                add_invoice.putExtra("BOTH_ADDRESS_IS_SAME", true);
+                add_invoice.putExtra("MOBILE_NUMBER", "");
                 startActivity(add_invoice);
             }
             if(item.getTitle().equals("My Profile")) {
@@ -502,7 +493,6 @@ public class Dashboard extends AppCompatActivity {
 
                         if(message.equals(condition)) {
                             setProfileUpdateLoading(false, response, context);
-                            Toast.makeText(getApplicationContext(), "Profile Updated!", Toast.LENGTH_SHORT).show();
                         }else {
                             // Handle the data accordingly
                             Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
@@ -576,16 +566,39 @@ public class Dashboard extends AppCompatActivity {
                         JSONObject item = items.getJSONObject(i);
                         String name = item.getString("name");
                         String id = item.getString("id");
+                        String sn = item.getString("serial_no");
                         String date = item.getString("invoice_date");
+                        String c_t = item.getString("customer_type");
+                        String aadhaar = item.getString("doc_no");
+                        String billling = item.getString("billing_address_id");
+                        String shipping = item.getString("shipping_address_id");
+                        String mobile = item.getString("mobile_number");
                         int cost = 0;
                         if(item.isNull("items_sum_price_of_all")) {
                             cost = 0;
                         }else {
                             cost = item.getInt("items_sum_price_of_all");
                         }
-                        if(!name.equals("null") && !id.equals("null")) {
+                        if(!name.equals("null")
+                            && !id.equals("null")
+                            && !sn.equals("null")
+                            && !c_t.equals("null")
+                        ) {
                             Log.d("ABC", name);
-                            dataArrayList.add(new ListData(name + " : " + id, date.equals("null") ? "No Date" : date, cost));
+                            dataArrayList.add(new ListData(
+                                        id,
+                                        sn,
+                                        name,
+                                        date,
+                                        cost,
+                                        "normal",
+                                        c_t,
+                                        aadhaar,
+                                        billling,
+                                        shipping,
+                                        mobile
+                                    )
+                            );
                         }
                     }
                     invoiceAdaptor.notifyDataSetChanged();

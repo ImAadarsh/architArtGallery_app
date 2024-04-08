@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 public class SearchInvoiceActivity extends AppCompatActivity {
 
+    TextView search_invoic_title;
     private ImageView back_button;
 
     SharedPreferences sharedpreferences, sharedpreferences2;
@@ -50,6 +52,8 @@ public class SearchInvoiceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_invoice);
+
+        search_invoic_title = findViewById(R.id.search_invoic_title);
 
         sharedpreferences = getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE);
         input_query = sharedpreferences.getString(INPUT_QUERY_KEY, "");
@@ -127,6 +131,9 @@ public class SearchInvoiceActivity extends AppCompatActivity {
     }
 
     private void setProfileUpdateLoading(boolean loading, String response, String context) {
+        if(context.equals("fetch_invoice") && loading) {
+            search_invoic_title.setText("Wait....");
+        }
         if(context.equals("fetch_invoice") && !loading) {
             if(response.length() >= 10){
                 try {
@@ -137,16 +144,39 @@ public class SearchInvoiceActivity extends AppCompatActivity {
                         JSONObject item = items.getJSONObject(i);
                         String name = item.getString("name");
                         String id = item.getString("id");
+                        String sn = item.getString("serial_no");
                         String date = item.getString("invoice_date");
+                        String c_t = item.getString("customer_type");
+                        String aadhaar = item.getString("doc_no");
+                        String billling = item.getString("billing_address_id");
+                        String shipping = item.getString("shipping_address_id");
+                        String mobile = item.getString("mobile_number");
                         int cost = 0;
                         if(item.isNull("items_sum_price_of_all")) {
                             cost = 0;
                         }else {
                             cost = item.getInt("items_sum_price_of_all");
                         }
-                        if(!name.equals("null") && !id.equals("null")) {
+                        if(!name.equals("null")
+                                && !id.equals("null")
+                                && !sn.equals("null")
+                                && !c_t.equals("null")
+                        ) {
                             Log.d("ABC", name);
-                            fullDataList.add(new ListData(name + " : " + id, date.equals("null") ? "No Date" : date, cost));
+                            fullDataList.add(new ListData(
+                                            id,
+                                            sn,
+                                            name,
+                                            date,
+                                            cost,
+                                            "normal",
+                                            c_t,
+                                            aadhaar,
+                                            billling,
+                                            shipping,
+                                            mobile
+                                    )
+                            );
                         }
                     }
                     invoiceAdaptor.notifyDataSetChanged();
@@ -158,6 +188,8 @@ public class SearchInvoiceActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }
+
+                search_invoic_title.setText("Search Invoice");
             }
         }
     }

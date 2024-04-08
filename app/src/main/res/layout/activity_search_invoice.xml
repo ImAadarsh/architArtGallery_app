@@ -26,13 +26,13 @@
             android:layout_height="wrap_content"
             android:src="@drawable/left_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/textView2"
+            app:layout_constraintEnd_toStartOf="@+id/search_invoic_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/search_invoic_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Search Invoice"
