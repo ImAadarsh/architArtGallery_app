@@ -294,7 +294,7 @@
     </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+        android:id="@+id/switch_invoice_draft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -318,7 +318,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/tabLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/switch_invoice_draft" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

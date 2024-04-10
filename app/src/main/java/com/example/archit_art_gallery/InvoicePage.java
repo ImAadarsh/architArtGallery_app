@@ -35,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -86,6 +88,28 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_page);
+
+        // Select Default Date
+        monthNames = new ArrayList<>();
+        monthNames.add("January");
+        monthNames.add("February");
+        monthNames.add("March");
+        monthNames.add("April");
+        monthNames.add("May");
+        monthNames.add("June");
+        monthNames.add("July");
+        monthNames.add("August");
+        monthNames.add("September");
+        monthNames.add("October");
+        monthNames.add("November");
+        monthNames.add("December");
+
+        LocalDate date = LocalDate.now();
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = dateTime.format(formatter);
+        String selectedDate = formatDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
+
         Map<String, String> typeRequestData = new HashMap<>();
         typeRequestData.put("type", "normal");
         if(getIntent().hasExtra("INVOICE_ID")) {
@@ -101,14 +125,20 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             // set two buttons.
             builder.setPositiveButton("Performa", (dialogInterface, i) -> {
                 typeRequestData.put("type", "performa");
+                typeRequestData.put("invoice_date", formattedDateTime);
+                typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
                 typeRequestData.put("type", "dummy");
+                typeRequestData.put("invoice_date", formattedDateTime);
+                typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
                 typeRequestData.put("type", "normal");
+                typeRequestData.put("invoice_date", formattedDateTime);
+                typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             // show the alert.
@@ -129,26 +159,10 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
         }
 
-        // Select Default Date
-        monthNames = new ArrayList<>();
-        monthNames.add("January");
-        monthNames.add("February");
-        monthNames.add("March");
-        monthNames.add("April");
-        monthNames.add("May");
-        monthNames.add("June");
-        monthNames.add("July");
-        monthNames.add("August");
-        monthNames.add("September");
-        monthNames.add("October");
-        monthNames.add("November");
-        monthNames.add("December");
-
         today_date_piker = findViewById(R.id.total_actual_date_piker_layout);
         invoice_pike_date = findViewById(R.id.total_actual_sale_date);
 
-        LocalDate date = LocalDate.now();
-        String selectedDate = formatDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
+
         // sate today date if current date are not given.
         invoice_pike_date.setText(selectedDate);
 
@@ -172,7 +186,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         aadhaar_no_text.setText(getIntent().getStringExtra("AADHAAR_NUMBER"));
         String billing_address_id = getIntent().getStringExtra("BILLING_ADDRESS");
         Billing_Address_ID = Integer.parseInt(billing_address_id);
-        req(new HashMap<>(), "/api/getAddressByInvoiceId?invoice_id=" + Invoice_ID, "Address retrieved successfully.", "fetch_address", "GET");
+        if(getIntent().hasExtra("INVOICE_ID")) {
+            req(new HashMap<>(), "/api/getAddressByInvoiceId?invoice_id=" + Invoice_ID, "Address retrieved successfully.", "fetch_address", "GET");
+        }
         billing_address_text_input_data = new String[]{"", "", "", "", ""};
         StringBuilder stringBuilder = new StringBuilder();
         int nextLineNeed = 0;
@@ -372,19 +388,31 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         // Bill Section
         next_invoice_button.setOnClickListener(e -> {
 
+            int docType = -1;
+            if(aadhaar_no_text.getText().length() == 15) {
+                docType = 1;
+            } else if (aadhaar_no_text.getText().length() == 12) {
+                docType = 0;
+            }else {
+                Toast.makeText(getApplicationContext(), "Put valid Aadhaar/GST Number.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             // Create Invoice
             Map<String, String> data = new HashMap<>();
             data.put("type", typeRequestData.get("type").toString());
             data.put("name", invoice_to_text.getText().toString());
             data.put("mobile_number", mobile_no_text.getText().toString());
             data.put("customer_type", customer_type_options.getText().toString());
-            data.put("doc_type", "0");
+            data.put("doc_type", docType + "");
             data.put("doc_no", aadhaar_no_text.getText().toString());
             data.put("business_id", business_id);
             data.put("location_id", location_id);
             data.put("payment_mode", "online");
             data.put("billing_address_id", Billing_Address_ID + "");
             data.put("shipping_address_id", Shipping_Address_ID + "");
+            data.put("invoice_date", formattedDateTime);
+            data.put("is_completed", 1 + "");
             data.put("id", Invoice_ID + "");
             req(data, "/api/editInvoice", "Invoice updated successfully.", "update_invoice_with_data", "POST");
 

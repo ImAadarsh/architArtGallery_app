@@ -35,6 +35,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONArray;
@@ -65,12 +66,15 @@ public class Dashboard extends AppCompatActivity {
     RecyclerView recyclerView;
     ListAdapter invoiceAdaptor;
     ArrayList<ListData> dataArrayList = new ArrayList<>();
+    ArrayList<ListData> invoiceArrayList = new ArrayList<>();
+    ArrayList<ListData> draftArrayList = new ArrayList<>();
 
     // Elements
     private ImageView dashboard_invoice_search;
     private ImageView profile_slider_back, my_profile_slider_back, my_report_slider_back;
     TextView total_actual_sale_date;
     float mButtonWidth;
+    TabLayout switch_invoice_draft;
 
     Drawable mDeleteIcon, mEditIcon, mPdfIcon;
     ArrayList<String> myMonths;
@@ -127,8 +131,38 @@ public class Dashboard extends AppCompatActivity {
         recyclerView.setAdapter(invoiceAdaptor);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Mange swipe to revel
+        switch_invoice_draft = findViewById(R.id.switch_invoice_draft);
 
+        switch_invoice_draft.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                // Check if the selected tab is "switch_invoice_draft"
+                if (tab.getText().toString().equals("Invoiced")) {
+//                    Toast.makeText(getApplicationContext(), "Invoiced", Toast.LENGTH_SHORT).show();
+                    dataArrayList.clear();
+                    dataArrayList.addAll(invoiceArrayList);
+                    invoiceAdaptor.notifyDataSetChanged();
+                }
+                if(tab.getText().toString().equals("Drafts")) {
+//                    Toast.makeText(getApplicationContext(), "Drafts", Toast.LENGTH_SHORT).show();
+                    dataArrayList.clear();
+                    dataArrayList.addAll(draftArrayList);
+                    invoiceAdaptor.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                // This method is not needed for your requirement, but it must be implemented
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                // This method is not needed for your requirement, but it must be implemented
+            }
+        });
+
+        // Mange swipe to revel
         mEditIcon = ContextCompat.getDrawable(this, R.drawable.ic_edit);
         mDeleteIcon = ContextCompat.getDrawable(this, R.drawable.ic_delete);
         mPdfIcon = ContextCompat.getDrawable(this, R.drawable.ic_pdf);
@@ -573,34 +607,58 @@ public class Dashboard extends AppCompatActivity {
                         String billling = item.getString("billing_address_id");
                         String shipping = item.getString("shipping_address_id");
                         String mobile = item.getString("mobile_number");
+                        String type = item.getString("type");
+                        int is_completed = 0;
                         int cost = 0;
                         if(item.isNull("items_sum_price_of_all")) {
                             cost = 0;
                         }else {
                             cost = item.getInt("items_sum_price_of_all");
                         }
+                        if(item.isNull("is_completed")) {
+                            cost = 0;
+                        }else {
+                            is_completed = item.getInt("is_completed");
+                        }
                         if(!name.equals("null")
                             && !id.equals("null")
                             && !sn.equals("null")
                             && !c_t.equals("null")
                         ) {
-                            Log.d("ABC", name);
-                            dataArrayList.add(new ListData(
-                                        id,
-                                        sn,
-                                        name,
-                                        date,
-                                        cost,
-                                        "normal",
-                                        c_t,
-                                        aadhaar,
-                                        billling,
-                                        shipping,
-                                        mobile
-                                    )
-                            );
+                            if(is_completed == 1) {
+                                invoiceArrayList.add(new ListData(
+                                                id,
+                                                sn,
+                                                name,
+                                                date,
+                                                cost,
+                                                type,
+                                                c_t,
+                                                aadhaar,
+                                                billling,
+                                                shipping,
+                                                mobile
+                                        )
+                                );
+                            }else {
+                                draftArrayList.add(new ListData(
+                                                id,
+                                                sn,
+                                                name,
+                                                date,
+                                                cost,
+                                                type,
+                                                c_t,
+                                                aadhaar,
+                                                billling,
+                                                shipping,
+                                                mobile
+                                        )
+                                );
+                            }
                         }
                     }
+                    dataArrayList.addAll(invoiceArrayList);
                     invoiceAdaptor.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
