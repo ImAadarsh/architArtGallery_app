@@ -84,7 +84,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.InvoiceViewHol
                 // set title
                 builder.setTitle("Choose One of them?");
                 // set message
-                builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
+                builder.setMessage("- View(Invoice PDF)\n- Delete\n- Edit(Modify)");
                 // set two buttons.
                 builder.setPositiveButton("View", (dialogInterface, i) -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://invoice.architartgallery.in/invoice.html?invoiceid=" + invoiceList.get(pos).invoice_id));

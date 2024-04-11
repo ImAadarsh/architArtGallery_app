@@ -83,6 +83,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
     int Shipping_Address_ID = 0;
     String bill_type = "";
     String[] billing_address_text_input_data;
+    String[] shipping_address_text_input_data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +204,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         billing_address_text.setText(concatenatedString);
         String shipping_address_Id = getIntent().getStringExtra("SHIPPING_ADDRESS");
         Shipping_Address_ID = Integer.parseInt(shipping_address_Id);
-        String[] shipping_address_text_input_data = {"", "", "", "", ""};
+        shipping_address_text_input_data = new String[]{"", "", "", "", ""};
         StringBuilder stringShippBuilder = new StringBuilder();
         int nextLineNeedShip = 0;
         for (String item : shipping_address_text_input_data) {
@@ -596,6 +597,26 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                     String concatenatedString = stringBuilder.toString();
                     billing_address_text.setText(concatenatedString);
 
+                    if(jArray.length() == 1) {
+                        JSONObject myResA2 = jArray.getJSONObject(0);
+                        String add1_2 = myResA2.getString("address_1");
+                        String add2_2 = myResA2.getString("address_2");
+                        String city_2 = myResA2.getString("city");
+                        String state_2 = myResA2.getString("state");
+                        String pincode_2 = myResA2.getString("pincode");
+                        shipping_address_text_input_data = new String[]{add1_2, add2_2, city_2, state_2, pincode_2};
+                        StringBuilder stringShippBuilder = new StringBuilder();
+                        int nextLineNeedShip = 0;
+                        for (String item : shipping_address_text_input_data) {
+                            if(item.length() >= 1) {
+                                stringShippBuilder.append(item).append(", ");
+                                if(nextLineNeedShip == 2) stringShippBuilder.append("\n");
+                                nextLineNeedShip += 1;
+                            }
+                        }
+                        String concatenatedString2 = stringShippBuilder.toString();
+                        shipping_address_text.setText(concatenatedString2);
+                    }
                     if(jArray.length() >= 2) {
                         JSONObject myResA2 = jArray.getJSONObject(1);
                         String add1_2 = myResA2.getString("address_1");
