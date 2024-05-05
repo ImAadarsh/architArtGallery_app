@@ -140,7 +140,7 @@
             android:id="@+id/is_gst_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Is GST Product"
+            android:text="For Inclusive GST"
             android:checked="true" />
 
     </LinearLayout>
