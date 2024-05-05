@@ -61,7 +61,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         ItemsData itemsData = itemsList.get(position);
         holder.item_name.setText(itemsData.getCOLUMN_NAME());
-        int total_amount = itemsData.getCOLUMN_QUANTITY() * itemsData.getCOLUMN_RATE();
+        double total_amount = itemsData.getCOLUMN_QUANTITY() * itemsData.getCOLUMN_RATE();
         holder.item_total_amount.setText("₹" + total_amount);
         holder.item_rate.setText("₹" + itemsData.getCOLUMN_RATE());
         holder.item_qty.setText("QTY " + itemsData.getCOLUMN_QUANTITY() + " x");

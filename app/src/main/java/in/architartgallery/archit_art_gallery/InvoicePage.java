@@ -123,25 +123,27 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
             // set two buttons.
             builder.setPositiveButton("Performa", (dialogInterface, i) -> {
+                bill_type = "performa";
                 typeRequestData.put("type", "performa");
                 typeRequestData.put("invoice_date", formattedDateTime);
                 typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
+                bill_type = "dummy";
                 typeRequestData.put("type", "dummy");
                 typeRequestData.put("invoice_date", formattedDateTime);
                 typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
+                bill_type = "normal";
                 typeRequestData.put("type", "normal");
                 typeRequestData.put("invoice_date", formattedDateTime);
                 typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
             // show the alert.
-            bill_type = typeRequestData.get("type");
             builder.show();
         }
 
@@ -503,11 +505,17 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 try {
                     JSONObject myRes;
                     myRes = new JSONObject(response);
+                    if(bill_type.equals("performa") || bill_type.equals("dummy")) {
+                        Serial_NO = 0;
+                    } else if (bill_type.equals("normal")) {
+                        Serial_NO = myRes.getJSONObject("data").getInt("serial_no");
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Invalid bill type!", Toast.LENGTH_SHORT).show();
+                    }
                     Invoice_ID = myRes.getJSONObject("data").getInt("id");
-                    Serial_NO = myRes.getJSONObject("data").getInt("serial_no");
                     invoice_serial_no.setText("SN. " + Serial_NO);
                 } catch (JSONException e) {
-                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Something went wrong! " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         }

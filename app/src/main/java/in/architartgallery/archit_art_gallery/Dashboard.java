@@ -19,6 +19,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -622,7 +623,7 @@ public class Dashboard extends AppCompatActivity {
                         String type = item.getString("type");
                         int is_completed = 0;
                         int cost = 0;
-                        if(item.isNull("items_sum_price_of_all")) {
+                        if(item.isNull("items_sum_price_of_all") || item.getString("items_sum_price_of_all").equals("null")) {
                             cost = 0;
                         }else {
                             cost = item.getInt("items_sum_price_of_all");
@@ -632,6 +633,7 @@ public class Dashboard extends AppCompatActivity {
                         }else {
                             is_completed = item.getInt("is_completed");
                         }
+                        Log.d("OK", item.toString());
                         if(!name.equals("null")
                             && !id.equals("null")
                             && !sn.equals("null")

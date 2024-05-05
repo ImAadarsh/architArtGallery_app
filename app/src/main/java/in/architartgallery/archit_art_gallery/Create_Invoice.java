@@ -140,7 +140,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                     itemsDB.add(new ItemsData(itemObject.getInt("id"),
                             product.getString("name"),
                             product.getString("hsn_code"),
-                            itemObject.getInt("price_of_one"),
+                            itemObject.getDouble("price_of_one"),
                             itemObject.getInt("quantity"),
                             itemObject.getInt("is_gst"),
                             Invoice_ID,
@@ -150,14 +150,14 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                             igst_gst_cost,
                             total_with_gst
                     ));
-                    total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
+                    total_ex_gst_amount += itemObject.getDouble("price_of_one") * itemObject.getInt("quantity");
                     total_ex_gst.setText("₹" + total_ex_gst_amount);
                     double dgst = total_ex_gst_amount * 0.09;
                     double cgst = total_ex_gst_amount * 0.09;
                     double igst = dgst + cgst;
                     if(!is_gst_product.isChecked()) {
-                        dgst = dgst - itemObject.getInt("price_of_one") * itemObject.getInt("quantity") * 0.09;
-                        cgst = cgst - itemObject.getInt("price_of_one") * itemObject.getInt("quantity") * 0.09;
+                        dgst = dgst - itemObject.getDouble("price_of_one") * itemObject.getInt("quantity") * 0.09;
+                        cgst = cgst - itemObject.getDouble("price_of_one") * itemObject.getInt("quantity") * 0.09;
                         igst = dgst + cgst;
                     }
                     delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
@@ -378,7 +378,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                     JSONObject myRes = new JSONObject(response);
                     JSONObject item = myRes.getJSONObject("data");
 
-                    total_ex_gst_amount += Integer.parseInt(item.getString("price_of_one")) * Integer.parseInt(item.getString("quantity"));
+                    total_ex_gst_amount += item.getDouble("price_of_one") * Integer.parseInt(item.getString("quantity"));
                     total_ex_gst.setText("₹" + total_ex_gst_amount);
                     dgst += item.getInt("dgst");
                     cgst += item.getInt("cgst");
@@ -409,7 +409,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                             itemsDB.add(new ItemsData(itemObject.getInt("id"),
                                     product.getString("name"),
                                     product.getString("hsn_code"),
-                                    itemObject.getInt("price_of_one"),
+                                    itemObject.getDouble("price_of_one"),
                                     itemObject.getInt("quantity"),
                                     itemObject.getInt("is_gst"),
                                     Invoice_ID,
@@ -419,11 +419,11 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                                     igst_gst_cost,
                                     total_with_gst
                             ));
-                            total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
+                            total_ex_gst_amount += itemObject.getDouble("price_of_one") * itemObject.getInt("quantity");
                             total_ex_gst.setText("₹" + total_ex_gst_amount);
-                            dgst += itemObject.getInt("dgst");
-                            cgst += itemObject.getInt("cgst");
-                            igst += itemObject.getInt("igst");
+                            dgst += itemObject.getDouble("dgst");
+                            cgst += itemObject.getDouble("cgst");
+                            igst += itemObject.getDouble("igst");
                             delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
                             cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
                             igst_gst_cost.setText("₹" + String.format("%.2f", igst));

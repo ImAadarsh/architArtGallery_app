@@ -6,7 +6,7 @@ public class ItemsData {
     int ITEM_ID;
     String COLUMN_NAME;
     String COLUMN_HAS_CODE;
-    int COLUMN_RATE;
+    double COLUMN_RATE;
     int COLUMN_QUANTITY;
     int IS_GST;
 
@@ -24,7 +24,7 @@ public class ItemsData {
         this.INVOICE_ID = invoice_id;
     }
 
-    public ItemsData(int item_id, String name, String has, int rate, int qty, int is_gst, String invoice_id,
+    public ItemsData(int item_id, String name, String has, double rate, int qty, int is_gst, String invoice_id,
                      TextView total_ex_gst, TextView delhi_gst_cost, TextView cgst_gst_cost, TextView igst_gst_cost, TextView total_with_gst) {
         this.ITEM_ID = item_id;
         this.COLUMN_NAME = name;
@@ -66,7 +66,7 @@ public class ItemsData {
         this.COLUMN_HAS_CODE = COLUMN_HAS_CODE;
     }
 
-    public int getCOLUMN_RATE() {
+    public double getCOLUMN_RATE() {
         return COLUMN_RATE;
     }
 

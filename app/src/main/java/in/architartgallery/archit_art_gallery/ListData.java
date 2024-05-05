@@ -12,7 +12,7 @@ public class ListData {
         this.invoice_user_name = invoice_user_name;
         this.invoice_data = invoice_data;
         this.invoice_amount = invoice_amount;
-        this.type = "normal";
+        this.type = type;
         this.customer_type = customer_type;
         this.aadhaar_number = aadhaar_number;
         this.billing_address = billing_address;
@@ -26,7 +26,7 @@ public class ListData {
         this.invoice_user_name = invoice_user_name;
         this.invoice_data = invoice_data;
         this.invoice_amount = invoice_amount;
-        this.type = "normal";
+        this.type = type;
         this.customer_type = "";
         this.aadhaar_number = "";
         this.billing_address = "";
@@ -39,7 +39,7 @@ public class ListData {
         this.invoice_user_name = invoice_user_name;
         this.invoice_data = invoice_data;
         this.invoice_amount = invoice_amount;
-        this.type = "normal";
+        this.type = type;
         this.customer_type = "";
         this.aadhaar_number = "";
         this.billing_address = "";
