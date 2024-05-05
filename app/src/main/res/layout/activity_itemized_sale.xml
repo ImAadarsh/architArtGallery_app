@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:orientation="vertical"
     android:padding="18dp"
-    tools:context=".ItemizedSale">
+    tools:context="in.architartgallery.archit_art_gallery.ItemizedSale">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayoutCompat"

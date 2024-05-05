@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:orientation="vertical"
     android:padding="18dp"
-    tools:context=".LoginScreen">
+    tools:context="in.architartgallery.archit_art_gallery.LoginScreen">
 
     <ImageView
         android:layout_marginTop="70dp"

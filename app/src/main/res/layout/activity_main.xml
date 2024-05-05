@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:layout_gravity="center"
-    tools:context=".MainActivity">
+    tools:context="in.architartgallery.archit_art_gallery.MainActivity">
 
     <LinearLayout
         android:id="@+id/animation_layout"

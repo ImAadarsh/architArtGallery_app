@@ -9,6 +9,7 @@
     tools:openDrawer="start">
 
     <com.google.android.material.navigation.NavigationView
+        android:id="@+id/expense_sidebar_nav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         app:menu="@menu/profile_sidebar"

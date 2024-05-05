@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -17,44 +16,47 @@
         android:theme="@style/Theme.Archit_Art_Gallery"
         tools:targetApi="31">
         <activity
-            android:name=".ItemizedSale"
+            android:name="in.architartgallery.archit_art_gallery.Expense"
             android:exported="false" />
         <activity
-            android:name=".InvoiceList"
+            android:name="in.architartgallery.archit_art_gallery.ItemizedSale"
             android:exported="false" />
         <activity
-            android:name=".ExpenseReport"
+            android:name="in.architartgallery.archit_art_gallery.InvoiceList"
             android:exported="false" />
         <activity
-            android:name=".ActualSale"
+            android:name="in.architartgallery.archit_art_gallery.ExpenseReport"
             android:exported="false" />
         <activity
-            android:name=".PurchaseSale"
+            android:name="in.architartgallery.archit_art_gallery.ActualSale"
             android:exported="false" />
         <activity
-            android:name=".Create_Invoice"
+            android:name="in.architartgallery.archit_art_gallery.PurchaseSale"
             android:exported="false" />
         <activity
-            android:name=".InvoicePage"
+            android:name="in.architartgallery.archit_art_gallery.Create_Invoice"
             android:exported="false" />
         <activity
-            android:name=".SearchInvoiceActivity"
+            android:name="in.architartgallery.archit_art_gallery.InvoicePage"
             android:exported="false" />
         <activity
-            android:name=".SearchActivity"
+            android:name="in.architartgallery.archit_art_gallery.SearchInvoiceActivity"
             android:exported="false" />
         <activity
-            android:name=".Dashboard"
+            android:name="in.architartgallery.archit_art_gallery.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name="in.architartgallery.archit_art_gallery.Dashboard"
             android:exported="false"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".ForetPassword"
+            android:name="in.architartgallery.archit_art_gallery.ForetPassword"
             android:exported="false" />
         <activity
-            android:name=".LoginScreen"
+            android:name="in.architartgallery.archit_art_gallery.LoginScreen"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="in.architartgallery.archit_art_gallery.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

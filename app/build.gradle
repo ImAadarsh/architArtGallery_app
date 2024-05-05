@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.archit_art_gallery'
+    namespace 'in.architartgallery.archit_art_gallery'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.archit_art_gallery"
+        applicationId "in.architartgallery.archit_art_gallery"
         minSdk 26
         targetSdk 33
         versionCode 1

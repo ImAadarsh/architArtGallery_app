@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:orientation="vertical"
     android:padding="18dp"
-    tools:context="in.architartgallery.archit_art_gallery.ExpenseReport">
+    tools:context="in.architartgallery.archit_art_gallery.Expense">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayoutCompat"
@@ -136,16 +136,34 @@
 
         </LinearLayout>
 
-        <TextView
-            android:textAlignment="center"
-            android:layout_marginTop="15dp"
+        <LinearLayout
+            android:paddingVertical="5dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="₹40000"
-            android:textSize="35sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_color"
-            />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_weight="1"
+                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="₹40000"
+                android:textSize="35sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color"
+                />
+
+            <Button
+                android:id="@+id/add_expenses"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:text="Add Expenses"
+                app:icon="@drawable/ic_ad"
+                />
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -213,7 +231,7 @@
             android:layout_marginBottom="5dp"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/purchase_recycler_view"
+            android:id="@+id/expense_recyler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
