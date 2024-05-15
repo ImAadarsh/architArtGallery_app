@@ -127,7 +127,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Sell Statics"
+            android:text="Sale Statics"
             android:textColor="@color/white"
             android:textSize="18dp"
             android:textStyle="bold"
