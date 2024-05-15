@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -110,6 +111,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         String selectedDate = formatDate(date.getYear(), date.getMonthValue() - 1, date.getDayOfMonth());
 
         Map<String, String> typeRequestData = new HashMap<>();
+        if(getIntent().hasExtra("TYPE")) {
+            bill_type = getIntent().getStringExtra("TYPE");
+        }
         typeRequestData.put("type", "normal");
         if(getIntent().hasExtra("INVOICE_ID")) {
             Invoice_ID = Integer.parseInt(getIntent().getStringExtra("INVOICE_ID"));
@@ -190,10 +194,12 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             aadhaar_no_text.setText(getIntent().getStringExtra("AADHAAR_NUMBER"));
         }
         String billing_address_id = getIntent().getStringExtra("BILLING_ADDRESS");
-        Billing_Address_ID = Integer.parseInt(billing_address_id);
-        if(getIntent().hasExtra("INVOICE_ID")) {
-            req(new HashMap<>(), "/api/getAddressByInvoiceId?invoice_id=" + Invoice_ID, "Address retrieved successfully.", "fetch_address", "GET");
+        if(!billing_address_id.equals("null")) {
+            if(getIntent().hasExtra("INVOICE_ID")) {
+                req(new HashMap<>(), "/api/getAddressByInvoiceId?invoice_id=" + Invoice_ID, "Address retrieved successfully.", "fetch_address", "GET");
+            }
         }
+        Billing_Address_ID = billing_address_id.equals("null") ? 0 : Integer.parseInt(billing_address_id);
         billing_address_text_input_data = new String[]{"", "", "", "", ""};
         StringBuilder stringBuilder = new StringBuilder();
         int nextLineNeed = 0;
@@ -207,7 +213,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         String concatenatedString = stringBuilder.toString();
         billing_address_text.setText(concatenatedString);
         String shipping_address_Id = getIntent().getStringExtra("SHIPPING_ADDRESS");
-        Shipping_Address_ID = Integer.parseInt(shipping_address_Id);
+        Shipping_Address_ID = shipping_address_Id.equals("null") ? 0 : Integer.parseInt(shipping_address_Id);
         shipping_address_text_input_data = new String[]{"", "", "", "", ""};
         StringBuilder stringShippBuilder = new StringBuilder();
         int nextLineNeedShip = 0;
@@ -406,7 +412,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
 
             // Create Invoice
             Map<String, String> data = new HashMap<>();
-            data.put("type", typeRequestData.get("type").toString());
+            data.put("type", typeRequestData.get("type"));
             data.put("name", invoice_to_text.getText().toString());
             data.put("mobile_number", mobile_no_text.getText().toString());
             data.put("customer_type", customer_type_options.getText().toString());
@@ -463,7 +469,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                             setLoading(false, response, context);
                         }else {
                             // Handle the data accordingly
-                            Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Error: get invalid response!", Toast.LENGTH_SHORT).show();
                             setLoading(false, "", context);
                         }
                     } catch (JSONException e) {
@@ -474,7 +480,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 },
                 error -> {
                     // Handle error
-                    Toast.makeText(getApplicationContext(), "Invalid credential!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "API throw, 400 - Invalid invoice or request!", Toast.LENGTH_LONG).show();
                     setLoading(false, "", context);
                 }) {
             @Override

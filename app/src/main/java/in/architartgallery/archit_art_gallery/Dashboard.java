@@ -633,7 +633,6 @@ public class Dashboard extends AppCompatActivity {
                         }else {
                             is_completed = item.getInt("is_completed");
                         }
-                        Log.d("OK", item.toString());
                         if(!name.equals("null")
                             && !id.equals("null")
                             && !sn.equals("null")
@@ -655,9 +654,30 @@ public class Dashboard extends AppCompatActivity {
                                         )
                                 );
                             }else {
+                                if(!date.equals("null")) {
+                                    draftArrayList.add(new ListData(
+                                                    id,
+                                                    sn,
+                                                    name,
+                                                    date,
+                                                    cost,
+                                                    type,
+                                                    c_t,
+                                                    aadhaar,
+                                                    billling,
+                                                    shipping,
+                                                    mobile
+                                            )
+                                    );
+                                }
+                            }
+                        }
+                        else {
+                            if(!billling.equals("null") && !shipping.equals("null") && !billling.equals("0") && !shipping.equals("0") && !date.equals("null")) {
+//                                Log.d("OK", id + " | " + sn + " | " + name + " | " + date + " | " + cost + " | " + type + " | " + c_t + " | " + aadhaar + " | " + billling + " | " + shipping + " | " + mobile);
                                 draftArrayList.add(new ListData(
                                                 id,
-                                                sn,
+                                                sn.length() > 0 ? sn.equals("null") ? "0" : sn : "0",
                                                 name,
                                                 date,
                                                 cost,

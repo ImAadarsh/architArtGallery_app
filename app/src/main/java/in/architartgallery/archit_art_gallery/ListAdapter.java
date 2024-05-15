@@ -100,6 +100,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.InvoiceViewHol
                         invoice_row_intent.putExtra("BILLING_ADDRESS", invoiceList.get(pos).billing_address);
                         invoice_row_intent.putExtra("SHIPPING_ADDRESS", invoiceList.get(pos).shipping_address);
                         invoice_row_intent.putExtra("BOTH_ADDRESS_IS_SAME", invoiceList.get(pos).billing_address == invoiceList.get(pos).shipping_address);
+                        invoice_row_intent.putExtra("TYPE", invoiceList.get(pos).getType());
                         invoice_row_intent.putExtra("MOBILE_NUMBER", invoiceList.get(pos).mobile_no);
                         context.startActivity(invoice_row_intent);
                     }

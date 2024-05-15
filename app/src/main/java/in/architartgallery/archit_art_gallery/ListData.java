@@ -1,5 +1,7 @@
 package in.architartgallery.archit_art_gallery;
 
+import android.util.Log;
+
 public class ListData {
 
     String invoice_id, invoice_sn, invoice_user_name, invoice_data, type, customer_type, aadhaar_number, billing_address, shipping_address, mobile_no;
@@ -117,5 +119,20 @@ public class ListData {
 
     public void setMobile_no(String mobile_no) {
         this.mobile_no = mobile_no;
+    }
+
+    public void debug() {
+        String invoiceDetails =
+                "Invoice ID" + ": " + this.invoice_id + " | " +
+                "Invoice SN" + ": " + this.invoice_sn + " | " +
+                "User Name" + ": " + this.invoice_user_name + " | " +
+                "Invoice Date" + ": " + this.invoice_data + " | " +
+                "Type" + ": " + this.type + " | " +
+                "Customer Type" + ": " + this.customer_type + " | " +
+                "Aadhaar Number" + ": " + this.aadhaar_number + " | " +
+                "Billing Address" + ": " + this.billing_address + " | " +
+                "Shipping Address" + ": " + this.shipping_address + " | " +
+                "Mobile Number" + ": " + this.mobile_no;
+        Log.d("OK", invoiceDetails);
     }
 }
