@@ -2,6 +2,7 @@ package in.architartgallery.archit_art_gallery;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -58,6 +59,8 @@ public class Dashboard extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     String phone, password, user_logged_in_data;
+
+    CardView state_dashboard;
 
     DrawerLayout drawerLayout;
     DrawerLayout profileDrawerLayout, reportDrawerLayout;
@@ -159,6 +162,12 @@ public class Dashboard extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
                 // This method is not needed for your requirement, but it must be implemented
             }
+        });
+
+        state_dashboard = findViewById(R.id.state_dashboard);
+        state_dashboard.setOnClickListener(e -> {
+            Intent state_intent = new Intent(getApplicationContext(), State.class);
+            startActivity(state_intent);
         });
 
         // Mange swipe to revel
