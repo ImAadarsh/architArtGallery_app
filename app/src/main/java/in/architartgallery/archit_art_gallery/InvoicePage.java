@@ -282,7 +282,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 addressReqData.put("city", city_edit_text.getText().toString());
                 addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
                 addressReqData.put("pincode", pincode_edit_text.getText().toString());
-                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_billing_address", "POST");
+                if(india_all_state_autocomplete_view.getText().toString().length() >= 1 && pincode_edit_text.getText().toString().length() == 6) {
+                    req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_billing_address", "POST");
+                }
 
 
                 String []billing_address_edited = { address_1_edit_text.getText().toString(),
@@ -296,13 +298,19 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 int iter = 0;
                 for (String item : billing_address_edited) {
                     billing_address_text_input_data[iter] = billing_address_edited[iter];
-                    tempStringBuilder.append(item).append(", ");
-                    if(iter == 2) tempStringBuilder.append("\n");
+                    if(item.length() >= 1) {
+                        tempStringBuilder.append(item).append(", ");
+                        if(iter == 2) tempStringBuilder.append("\n");
+                    }
                     iter += 1;
                 }
                 String tempEditAddress = tempStringBuilder.toString();
-                billing_address_text.setText(tempEditAddress);
-                sheetDialog.hide();
+                if(india_all_state_autocomplete_view.getText().toString().length() >= 1 && pincode_edit_text.getText().toString().length() == 6) {
+                    billing_address_text.setText(tempEditAddress);
+                    sheetDialog.hide();
+                }else {
+                    Toast.makeText(getApplicationContext(), "State & Pin code are mandatory!", Toast.LENGTH_SHORT).show();
+                }
             });
 
             same_address_checked.setChecked(billing_address_text_input_data == shipping_address_text_input_data);
@@ -353,7 +361,9 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 addressReqData.put("city", city_edit_text.getText().toString());
                 addressReqData.put("state", india_all_state_autocomplete_view.getText().toString());
                 addressReqData.put("pincode", pincode_edit_text.getText().toString());
-                req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_shipping_address", "POST");
+                if(india_all_state_autocomplete_view.getText().toString().length() >= 1 && pincode_edit_text.getText().toString().length() == 6) {
+                    req(addressReqData, "/api/addAddress", "Adress created/Updated successfully.", "add_shipping_address", "POST");
+                }
 
                 String []shipping_address_edited = { address_1_edit_text.getText().toString(),
                         address_2_edit_text.getText().toString(),
@@ -366,13 +376,19 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 int iter = 0;
                 for (String item : shipping_address_edited) {
                     shipping_address_text_input_data[iter] = shipping_address_edited[iter];
-                    tempStringBuilder.append(item).append(", ");
-                    if(iter == 2) tempStringBuilder.append("\n");
+                    if(item.length() >= 1) {
+                        tempStringBuilder.append(item).append(", ");
+                        if(iter == 2) tempStringBuilder.append("\n");
+                    }
                     iter += 1;
                 }
                 String tempEditAddress = tempStringBuilder.toString();
-                shipping_address_text.setText(tempEditAddress);
-                sheetDialog.hide();
+                if(india_all_state_autocomplete_view.getText().toString().length() >= 1 && pincode_edit_text.getText().toString().length() == 6) {
+                    shipping_address_text.setText(tempEditAddress);
+                    sheetDialog.hide();
+                }else {
+                    Toast.makeText(getApplicationContext(), "State & Pin code are mandatory!", Toast.LENGTH_SHORT).show();
+                }
             });
 
             same_address_checked.setChecked(billing_address_text_input_data == shipping_address_text_input_data);
@@ -392,8 +408,10 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 int iter = 0;
                 for (String item : billing_address_text_input_data) {
                     shipping_address_text_input_data[iter] = billing_address_text_input_data[iter];
-                    temp.append(item).append(", ");
-                    if(iter == 2) temp.append("\n");
+                    if(item.length() >= 1) {
+                        temp.append(item).append(", ");
+                        if(iter == 2) temp.append("\n");
+                    }
                     iter += 1;
                 }
                 shipping_address_text.setText(temp.toString());
@@ -512,7 +530,12 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                     JSONObject myRes;
                     myRes = new JSONObject(response);
                     if(bill_type.equals("performa") || bill_type.equals("dummy")) {
-                        Serial_NO = 0;
+                        if(bill_type.equals("dummy")) {
+                            Serial_NO = myRes.getJSONObject("data").getInt("serial_no");
+                        }else {
+                            Toast.makeText(getApplicationContext(), "Performa has no serial no.", Toast.LENGTH_SHORT).show();
+                            Serial_NO = 0;
+                        }
                     } else if (bill_type.equals("normal")) {
                         Serial_NO = myRes.getJSONObject("data").getInt("serial_no");
                     }else {

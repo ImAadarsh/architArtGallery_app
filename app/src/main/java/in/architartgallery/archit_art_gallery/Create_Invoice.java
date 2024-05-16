@@ -89,13 +89,14 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         Bill_Type = getIntent().getStringExtra("BILL_TYPE");
         req(new HashMap<>(), "/api/getDetailedInvoice/" + Invoice_ID, "Invoice details retrieved successfully.", "fetch_old_item", "GET");
 
-        if(Bill_Type.equals("normal")) {
-            bill_create_btn.setText("Create Bill");
-        }else if(Bill_Type.equals("performa")) {
-            bill_create_btn.setText("Create Performa");
-        }else if(Bill_Type.equals("dummy")) {
-            bill_create_btn.setText("Create Dummy");
-        }
+//        if(Bill_Type.equals("normal")) {
+//            bill_create_btn.setText("Create Bill");
+//        }else if(Bill_Type.equals("performa")) {
+//            bill_create_btn.setText("Create Performa");
+//        }else if(Bill_Type.equals("dummy")) {
+//            bill_create_btn.setText("Create Dummy");
+//        }
+        bill_create_btn.setText("Invoice");
 
         // Manage BILLS and GST INFO and data
         total_ex_gst = findViewById(R.id.total_ex_gst);
