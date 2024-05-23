@@ -1,6 +1,10 @@
 package in.architartgallery.archit_art_gallery;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +50,7 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
         ExpenseData expenseData = expenseDataList.get(position);
-        holder.name.setText(expenseData.getName());
+        holder.name.setText(expenseData.getName() + (expenseData.getType().equals("1") ? " : Monthly" : " : Adhoc"));
         holder.date.setText(expenseData.getDate());
         holder.amount.setText("₹" + expenseData.getAmount());
     }
@@ -68,37 +72,32 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
             name = itemView.findViewById(R.id.expense_name);
             date = itemView.findViewById(R.id.expense_date_time);
             amount = itemView.findViewById(R.id.expense_amount);
+
+            itemView.setOnClickListener(e -> {
+                int pos = getAdapterPosition();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                // set title
+                builder.setTitle("Choose One of them?");
+                // set message
+                builder.setMessage("- Ok(Keep Item)\n- Delete");
+                // set two buttons.
+                builder.setPositiveButton("Ok", (dialogInterface, i) -> {
+                    //
+                });
+                builder.setNegativeButton("Delete", (dialogInterface, i) -> {
+                    Log.d("TE", expenseDataList.toString());
+                    req(new HashMap<>(), "/api/deleteExpense?id=" + expenseDataList.get(pos).getId(), "Expense deleted successfully.", "item_delete", "GET", pos);
+                });
+//                builder.setNeutralButton("View", (inf, i) -> {
+//                    Log.d("T", base_url + expenseDataList.get(pos).file_Url);
+//                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(base_url + expenseDataList.get(pos).file_Url));
+//                    e.getContext().startActivity(intent);
+//                });
+                // show the alert.
+                builder.show();
+            });
         }
-    }
-
-    void deleteItem(int pos, String response) {
-//        Toast.makeText(context, "Delete Item", Toast.LENGTH_SHORT).show();
-//        Log.d("TEST", response);
-//
-//        if(response.length() >= 10) {
-//            try {
-//                Invoice_Old_Date = new JSONObject(response);
-//                try {
-//                    JSONObject dataArray = Invoice_Old_Date.getJSONObject("data");
-//                    total_ex_gst_amount = dataArray.getInt("total_amount");
-//                    itemsList.get(pos).total_ex_gst.setText("₹" + total_ex_gst_amount);
-//                    dgst = dataArray.getInt("total_dgst");
-//                    cgst = dataArray.getInt("total_cgst");
-//                    igst = dataArray.getInt("total_igst");
-//                    itemsList.get(pos).delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
-//                    itemsList.get(pos).cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
-//                    itemsList.get(pos).igst_gst_cost.setText("₹" + String.format("%.2f", igst));
-//                    itemsList.get(pos).total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + dgst + cgst + igst)));
-//                }catch (JSONException e) {
-//                    Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (JSONException e) {
-//                Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-
-        expenseDataList.remove(pos);
-        notifyDataSetChanged();
     }
 
     void req(Map<String, String> data, String api_endpoint, String condition, String task, String method, int pos) {
@@ -111,21 +110,19 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
                         // Now you can access data from the JSON object
                         String message = jsonResponse.getString("message");
 
-//                        if(message.equals(condition)) {
-//                            if(task.equals("item_delete")) {
-//                                String tempId = itemsList.get(pos).getINVOICE_ID();
-//                                if(response.length() > 10) {
-//                                    req(new HashMap<>(), "/api/getDetailedInvoice/" + tempId, "Invoice details retrieved successfully.", "fetch_old_item", "GET", pos);
-//                                }
-//                            }
-//                            if(task.equals("fetch_old_item")) {
+                        if(message.equals(condition)) {
+                            if(task.equals("item_delete")) {
+                                expenseDataList.remove(pos);
+                                notifyDataSetChanged();
+                            }
+                            if(task.equals("fetch_old_item")) {
 //                                Toast.makeText(context, "List updated!", Toast.LENGTH_SHORT).show();
 //                                deleteItem(pos, response);
-//                            }
-//                        }else {
-//                            // Handle the data accordingly
-//                            Toast.makeText(context, "Invalid credential!", Toast.LENGTH_SHORT).show();
-//                        }
+                            }
+                        }else {
+                            // Handle the data accordingly
+                            Toast.makeText(context, "Invalid credential!", Toast.LENGTH_SHORT).show();
+                        }
                     } catch (JSONException e) {
                         // Handle JSON parsing error
                         Toast.makeText(context, "Error: API response error!", Toast.LENGTH_SHORT).show();

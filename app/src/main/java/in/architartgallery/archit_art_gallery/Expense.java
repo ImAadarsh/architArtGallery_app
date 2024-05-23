@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -19,8 +21,10 @@ import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.slider.RangeSlider;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,8 +39,15 @@ public class Expense extends AppCompatActivity {
     Button add_expenses;
     RangeSlider rangeSlider;
 
+    TextView transactions_count, total_expense;
+    double full_total, adhoc_total, monthly_total;
+    MaterialCheckBox monthly_filter, adhoc_filter;
+
     RecyclerView expense_recycler_view;
     ArrayList<ExpenseData> dataArrayList = new ArrayList<>();
+    ArrayList<ExpenseData> monthlyArrayList = new ArrayList<>();
+    ArrayList<ExpenseData> adhocArrayList = new ArrayList<>();
+    ArrayList<ExpenseData> tempArrayList = new ArrayList<>();
     ExpenseAdapter expenseAdapter;
 
     JSONObject ExpenseData;
@@ -48,11 +59,16 @@ public class Expense extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expense);
 
-        req(new HashMap<>(), "/api/getAllExpenses", "need an msg", "fetch_old_item", "GET");
+        req(new HashMap<>(), "/api/getAllExpenses", "Data Feteched.", "fetch_old_item", "GET");
 
         back_button = findViewById(R.id.back_button);
         purchase_sale_config = findViewById(R.id.purchase_sale_config);
         add_expenses = findViewById(R.id.add_expenses);
+
+        transactions_count = findViewById(R.id.transactions_count);
+        total_expense = findViewById(R.id.total_expense);
+        monthly_filter = findViewById(R.id.monthly_filter);
+        adhoc_filter = findViewById(R.id.adhoc_filter);
 
         back_button.setOnClickListener(e -> {
             onBackPressed();
@@ -95,14 +111,62 @@ public class Expense extends AppCompatActivity {
 
         });
 
-        dataArrayList.add(new ExpenseData("1", "ABC : Monthly", "1", "12 Jan 2024 | 11:55 AM", 100));
-        dataArrayList.add(new ExpenseData("2", "BCD : Adhoc", "1", "12 Jan 2024 | 11:55 AM", 100));
-        dataArrayList.add(new ExpenseData("3", "KBC : Monthly", "1", "12 Jan 2024 | 11:55 AM", 100));
-
         expense_recycler_view = findViewById(R.id.expense_recyler_view);
-        expenseAdapter = new ExpenseAdapter(dataArrayList, this);
+        expenseAdapter = new ExpenseAdapter(tempArrayList, this);
         expense_recycler_view.setAdapter(expenseAdapter);
         expense_recycler_view.setLayoutManager(new LinearLayoutManager(this));
+
+        monthly_filter.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b && adhoc_filter.isChecked()) {
+                tempArrayList.clear();
+                tempArrayList.addAll(monthlyArrayList);
+                tempArrayList.addAll(adhocArrayList);
+            }else {
+                if(b) {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(monthlyArrayList);
+                }else if(adhoc_filter.isChecked()) {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(adhocArrayList);
+                }else {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(dataArrayList);
+                }
+            }
+            double total_exp = 0;
+            for(int i = 0; i < tempArrayList.size(); i++) {
+                total_exp += tempArrayList.get(i).getAmount();
+            }
+            total_expense.setText("₹" + total_exp);
+            transactions_count.setText(tempArrayList.size() + " " + "Transactions");
+            expenseAdapter.notifyDataSetChanged();
+        });
+
+        adhoc_filter.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b && monthly_filter.isChecked()) {
+                tempArrayList.clear();
+                tempArrayList.addAll(monthlyArrayList);
+                tempArrayList.addAll(adhocArrayList);
+            }else {
+                if(b) {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(adhocArrayList);
+                }else if(monthly_filter.isChecked()) {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(monthlyArrayList);
+                }else {
+                    tempArrayList.clear();
+                    tempArrayList.addAll(dataArrayList);
+                }
+            }
+            double total_exp = 0;
+            for(int i = 0; i < tempArrayList.size(); i++) {
+                total_exp += tempArrayList.get(i).getAmount();
+            }
+            total_expense.setText("₹" + total_exp);
+            transactions_count.setText(tempArrayList.size() + " " + "Transactions");
+            expenseAdapter.notifyDataSetChanged();
+        });
     }
 
     void req(Map<String, String> data, String api_endpoint, String condition, String context, String method) {
@@ -154,77 +218,57 @@ public class Expense extends AppCompatActivity {
     }
 
     private void setLoading(boolean loading, String response, String context) {
-//        if(context.equals("add_new_item") && loading) {
-//            item_add_button.setText("SN. Wait...");
-//            item_add_button.setEnabled(false);
-//        }
-//        if(context.equals("add_new_item") && !loading) {
-//            item_add_button.setText("Add");
-//            item_add_button.setEnabled(true);
-//            if(response.length() >= 10) {
-//                total_ex_gst_amount = Double.parseDouble(total_ex_gst.getText().toString().replace("₹", ""));
-//                try {
-//                    Log.d("Test", response);
-//                    JSONObject myRes = new JSONObject(response);
-//                    JSONObject item = myRes.getJSONObject("data");
-//
-//                    total_ex_gst_amount += Integer.parseInt(item.getString("price_of_one")) * Integer.parseInt(item.getString("quantity"));
-//                    total_ex_gst.setText("₹" + total_ex_gst_amount);
-//                    dgst += item.getInt("dgst");
-//                    cgst += item.getInt("cgst");
-//                    igst += item.getInt("igst");
-//                    delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
-//                    cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
-//                    igst_gst_cost.setText("₹" + String.format("%.2f", igst));
-//                    total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + dgst + cgst + igst)));
-//
-////                    Invoice_ID = myRes.getJSONObject("data").getInt("id");
-//                } catch (JSONException e) {
-//                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
-//        if(context.equals("fetch_old_item") && !loading) {
-//            if(response.length() >= 10) {
-//                try {
-//                    ExpenseData = new JSONObject(response);
-//                    try {
-//                        JSONObject dataArray = Invoice_Old_Date.getJSONObject("data");
-//                        JSONArray itemsArray = dataArray.getJSONArray("items");
-//                        for (int i = 0; i < itemsArray.length(); i++) {
-//                            JSONObject itemObject = itemsArray.getJSONObject(i);
-//                            JSONObject product = itemObject.getJSONObject("product");
-//                            itemsDB.add(new ItemsData(itemObject.getInt("id"),
-//                                    product.getString("name"),
-//                                    product.getString("hsn_code"),
-//                                    itemObject.getInt("price_of_one"),
-//                                    itemObject.getInt("quantity"),
-//                                    itemObject.getInt("is_gst"),
-//                                    Invoice_ID,
-//                                    total_ex_gst,
-//                                    delhi_gst_cost,
-//                                    cgst_gst_cost,
-//                                    igst_gst_cost,
-//                                    total_with_gst
-//                            ));
-//                            total_ex_gst_amount += itemObject.getInt("price_of_one") * itemObject.getInt("quantity");
-//                            total_ex_gst.setText("₹" + total_ex_gst_amount);
-//                            dgst += itemObject.getInt("dgst");
-//                            cgst += itemObject.getInt("cgst");
-//                            igst += itemObject.getInt("igst");
-//                            delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
-//                            cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
-//                            igst_gst_cost.setText("₹" + String.format("%.2f", igst));
-//                            total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + dgst + cgst + igst)));
-//                        }
-//                        ItemsAdaptor.notifyDataSetChanged();
-//                    }catch (JSONException e) {
-//                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-//                    }
-//                } catch (JSONException e) {
-//                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
+        if(context.equals("fetch_old_item") && loading) {
+            //
+        }
+        if(context.equals("fetch_old_item") && !loading) {
+            if(response.length() >= 10) {
+                try {
+                    ExpenseData = new JSONObject(response);
+                    try {
+                        JSONObject myRes = new JSONObject(response);
+                        JSONArray itemsArray = myRes.getJSONArray("data");
+                        for (int i = 0; i < itemsArray.length(); i++) {
+                            JSONObject itemObject = itemsArray.getJSONObject(i);
+                            dataArrayList.add(new ExpenseData(itemObject.getInt("id") + "",
+                                    itemObject.getString("name"),
+                                    itemObject.getString("type"),
+                                    "12 Jan 2024 | 11:55 AM",
+                                    itemObject.getDouble("amount"),
+                                    itemObject.getString("file")
+                            ));
+                            if(itemObject.getString("type").equals("1")) {
+                                monthlyArrayList.add(new ExpenseData(itemObject.getInt("id") + "",
+                                        itemObject.getString("name"),
+                                        itemObject.getString("type"),
+                                        "12 Jan 2024 | 11:55 AM",
+                                        itemObject.getDouble("amount"),
+                                        itemObject.getString("file")
+                                ));
+                                monthly_total += itemObject.getDouble("amount");
+                            }else {
+                                adhocArrayList.add(new ExpenseData(itemObject.getInt("id") + "",
+                                        itemObject.getString("name"),
+                                        itemObject.getString("type"),
+                                        "12 Jan 2024 | 11:55 AM",
+                                        itemObject.getDouble("amount"),
+                                        itemObject.getString("file")
+                                ));
+                                adhoc_total += itemObject.getDouble("amount");
+                            }
+                            full_total += itemObject.getDouble("amount");
+                        }
+                        transactions_count.setText(itemsArray.length() + " " + "Transactions");
+                        total_expense.setText("₹" + full_total);
+                        tempArrayList.addAll(dataArrayList);
+                        expenseAdapter.notifyDataSetChanged();
+                    }catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 }

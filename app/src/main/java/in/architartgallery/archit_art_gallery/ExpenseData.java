@@ -1,15 +1,16 @@
 package in.architartgallery.archit_art_gallery;
 
 public class ExpenseData {
-    public String id, name, type, date;
+    public String id, name, type, date, file_Url;
     public double amount;
 
-    public ExpenseData(String id, String name, String type, String date, double amount) {
+    public ExpenseData(String id, String name, String type, String date, double amount, String file_url) {
         this.id = id;
         this.name = name;
         this.type = type;
         this.amount = amount;
         this.date = date;
+        this.file_Url = file_url;
     }
 
     public String getDate() {
@@ -50,5 +51,13 @@ public class ExpenseData {
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public String getFile_Url() {
+        return file_Url;
+    }
+
+    public void setFile_Url(String file_Url) {
+        this.file_Url = file_Url;
     }
 }

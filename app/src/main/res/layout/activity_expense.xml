@@ -145,11 +145,12 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/total_expense"
                 android:layout_weight="1"
                 android:textAlignment="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="₹40000"
+                android:text="₹0"
                 android:textSize="35sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary_color"
@@ -166,9 +167,10 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/transactions_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="2000 Transactions"
+            android:text="0 Transactions"
             android:textSize="17sp"
             android:textAlignment="center"
             android:layout_marginTop="5dp"/>
@@ -195,6 +197,7 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/monthly_filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Monthly" />
@@ -209,6 +212,7 @@
                     android:orientation="vertical">
 
                     <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/adhoc_filter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Adhoc" />
