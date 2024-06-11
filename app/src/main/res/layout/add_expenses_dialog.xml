@@ -105,16 +105,19 @@
             android:orientation="horizontal">
 
             <RadioGroup
+                android:id="@+id/add_expense_type_input"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <RadioButton
+                    android:id="@+id/monthly"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Monthly" />
 
                 <RadioButton
+                    android:id="@+id/adhoc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Adhoc" />
@@ -124,13 +127,14 @@
         </LinearLayout>
         
         <Button
+            android:id="@+id/file_upload_btn"
             android:textSize="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/Widget.Material3.Button.TextButton.Icon"
             app:icon="@drawable/ic_upload"
             app:iconSize="30dp"
-            android:text="Upload Reciept"
+            android:text="Upload Receipt"
             android:textColor="@color/black"
             />
 

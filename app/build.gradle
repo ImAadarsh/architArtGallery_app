@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "in.architartgallery.archit_art_gallery"
-        minSdk 26
+        minSdk 21
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -41,4 +41,6 @@ dependencies {
     implementation 'androidx.core:core:1.6.0'
     // API Intregration
     implementation 'com.android.volley:volley:1.2.1'
+    // Dexter
+    implementation 'com.karumi:dexter:6.2.3'
 }
