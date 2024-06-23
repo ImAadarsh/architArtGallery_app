@@ -174,15 +174,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 Invoice_Old_Date = new JSONObject(response);
                 try {
                     JSONObject dataArray = Invoice_Old_Date.getJSONObject("data");
-                    total_ex_gst_amount = dataArray.getInt("total_amount");
-                    itemsList.get(pos).total_ex_gst.setText("₹" + total_ex_gst_amount);
-                    dgst = dataArray.getInt("total_dgst");
-                    cgst = dataArray.getInt("total_cgst");
-                    igst = dataArray.getInt("total_igst");
-                    itemsList.get(pos).delhi_gst_cost.setText("₹" + String.format("%.2f", dgst));
-                    itemsList.get(pos).cgst_gst_cost.setText("₹" + String.format("%.2f", cgst));
-                    itemsList.get(pos).igst_gst_cost.setText("₹" + String.format("%.2f", igst));
-                    itemsList.get(pos).total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + dgst + cgst + igst)));
+                    total_ex_gst_amount = dataArray.getDouble("total_amount");
+                    dgst = dataArray.getDouble("total_dgst");
+                    cgst = dataArray.getDouble("total_cgst");
+                    igst = dataArray.getDouble("total_igst");
+                    itemsList.get(pos).total_ex_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount - (dgst + cgst + igst))));
+                    itemsList.get(pos).delhi_gst_cost.setText("₹" + dgst);
+                    itemsList.get(pos).cgst_gst_cost.setText("₹" + cgst);
+                    itemsList.get(pos).igst_gst_cost.setText("₹" + igst);
+                    itemsList.get(pos).total_with_gst.setText("₹" + total_ex_gst_amount);
                 }catch (JSONException e) {
                     Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show();
                 }

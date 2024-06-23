@@ -647,7 +647,7 @@ public class Dashboard extends AppCompatActivity {
                             && !sn.equals("null")
                             && !c_t.equals("null")
                         ) {
-                            if(is_completed == 1) {
+                            if(is_completed == 1 && cost != 0) {
                                 invoiceArrayList.add(new ListData(
                                                 id,
                                                 sn,
@@ -682,11 +682,28 @@ public class Dashboard extends AppCompatActivity {
                             }
                         }
                         else {
-                            if(!billling.equals("null") && !shipping.equals("null") && !billling.equals("0") && !shipping.equals("0") && !date.equals("null")) {
+                            if(cost != 0) {
+                                if(!billling.equals("null") && !shipping.equals("null") && !billling.equals("0") && !shipping.equals("0") && !date.equals("null")) {
 //                                Log.d("OK", id + " | " + sn + " | " + name + " | " + date + " | " + cost + " | " + type + " | " + c_t + " | " + aadhaar + " | " + billling + " | " + shipping + " | " + mobile);
+                                    invoiceArrayList.add(new ListData(
+                                                    id,
+                                                    sn.length() > 0 ? sn.equals("null") ? "0" : sn : "0",
+                                                    name,
+                                                    date,
+                                                    cost,
+                                                    type,
+                                                    c_t,
+                                                    aadhaar,
+                                                    billling,
+                                                    shipping,
+                                                    mobile
+                                            )
+                                    );
+                                }
+                            }else {
                                 draftArrayList.add(new ListData(
                                                 id,
-                                                sn.length() > 0 ? sn.equals("null") ? "0" : sn : "0",
+                                                sn,
                                                 name,
                                                 date,
                                                 cost,

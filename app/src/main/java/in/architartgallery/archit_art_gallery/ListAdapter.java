@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +56,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.InvoiceViewHol
         holder.invoice_user_name.setText(invoice.getInvoice_user_name());
         holder.invoice_amount.setText("₹" + invoice.getInvoice_amount());
         holder.invoice_date.setText(invoice.getInvoice_data());
+        if(invoice.getType().equals("performa")) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.color_strip.setBackgroundColor(context.getColor(R.color.primary_color));
+            }
+        }else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                holder.color_strip.setBackgroundColor(context.getColor(R.color.white));
+            }
+        }
     }
 
     @Override
@@ -67,11 +78,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.InvoiceViewHol
         TextView invoice_amount;
         TextView invoice_date;
 
+        LinearLayout color_strip;
+
         public InvoiceViewHolder(@NonNull View itemView) {
             super(itemView);
             invoice_user_name = itemView.findViewById(R.id.invoice_user_name);
             invoice_amount = itemView.findViewById(R.id.invoice_amount);
             invoice_date = itemView.findViewById(R.id.invoice_date);
+            color_strip = itemView.findViewById(R.id.color_strip);
 
             itemView.setOnClickListener(e -> {
                 int pos = getAdapterPosition();

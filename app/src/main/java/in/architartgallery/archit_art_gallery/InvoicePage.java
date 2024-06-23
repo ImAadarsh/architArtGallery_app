@@ -124,7 +124,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             // set title
             builder.setTitle("Choose One of them?");
             // set message
-            builder.setMessage("- Invoice(normal)\n- Dummy\n- Performa");
+            builder.setMessage("- Invoice(normal)\n- Performa");
             // set two buttons.
             builder.setPositiveButton("Performa", (dialogInterface, i) -> {
                 bill_type = "performa";
@@ -133,13 +133,13 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 typeRequestData.put("is_completed", 0 + "");
                 req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
             });
-            builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
-                bill_type = "dummy";
-                typeRequestData.put("type", "dummy");
-                typeRequestData.put("invoice_date", formattedDateTime);
-                typeRequestData.put("is_completed", 0 + "");
-                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
-            });
+//            builder.setNegativeButton("Dummy", (dialogInterface, i) -> {
+//                bill_type = "dummy";
+//                typeRequestData.put("type", "dummy");
+//                typeRequestData.put("invoice_date", formattedDateTime);
+//                typeRequestData.put("is_completed", 0 + "");
+//                req(typeRequestData, "/api/createInvoice", "Invoice created successfully.", "first_time_invoice_create", "POST");
+//            });
             builder.setNeutralButton("Invoice", (dialogInterface, i) -> {
                 bill_type = "normal";
                 typeRequestData.put("type", "normal");
