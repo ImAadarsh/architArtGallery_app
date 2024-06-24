@@ -67,6 +67,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
 
     // Mange Payment Option and load
     ConstraintLayout bottom_payment_mode_option;
+    SwitchMaterial payment_mode;
     final static String base_url = "https://architartgallery.in/public";
     String Invoice_ID, Serial_NO, Bill_Type;
     JSONObject Invoice_Old_Date;
@@ -129,6 +130,8 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         no_item_added = findViewById(R.id.no_item_added);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        payment_mode = findViewById(R.id.payment_mode);
+
         if(Invoice_Old_Date != null) {
             try {
                 total_ex_gst_amount = Double.parseDouble(total_ex_gst.getText().toString().replace("₹", ""));
@@ -167,6 +170,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
 //                    total_with_gst.setText("₹" + String.format("%.2f", (total_ex_gst_amount + igst)));
                     total_with_gst.setText("₹" + String.format("%.2f", dataArray.getDouble("total_amount")));
                 }
+                payment_mode.setChecked(dataArray.getString("payment_mode").equals("online"));
                 ItemsAdaptor.notifyDataSetChanged();
             }catch (JSONException e) {
                 //
@@ -287,6 +291,10 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
         });
 
         bill_create_btn.setOnClickListener(e -> {
+            Map<String, String> reqData = new HashMap<>();
+            reqData.put("id", Invoice_ID);
+            reqData.put("payment_mode", payment_mode.isChecked() ? "online" : "cash");
+            req(reqData, "/api/editInvoice", "Invoice updated successfully.", "update_payment_mode", "POST");
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://invoice.architartgallery.in/invoice.html?invoiceid=" + Invoice_ID));
             Intent dashboard = new Intent(this, Dashboard.class);
             e.getContext().startActivity(dashboard);
@@ -445,6 +453,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
                             recyclerView.setVisibility(View.VISIBLE);
                             no_item_added.setVisibility(View.GONE);
                         }
+                        payment_mode.setChecked(dataArray.getString("payment_mode").equals("online"));
                         ItemsAdaptor.notifyDataSetChanged();
                     }catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT).show();

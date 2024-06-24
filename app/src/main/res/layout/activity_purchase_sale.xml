@@ -68,48 +68,49 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="45dp"
         android:orientation="vertical"
-        android:layout_marginTop="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat"
         tools:layout_editor_absoluteX="18dp">
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleButton"
             android:layout_width="match_parent"
-            app:singleSelection="true"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:singleSelection="true">
 
             <Button
                 android:id="@+id/button1"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Day" />
 
             <Button
                 android:id="@+id/button2"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Week" />
 
             <Button
                 android:id="@+id/button3"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Month" />
 
             <Button
                 android:id="@+id/button4"
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Year" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -119,113 +120,97 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"></LinearLayout>
 
-        <LinearLayout
-            android:background="@drawable/border_radious"
-            android:backgroundTint="#E0F2FF"
-            android:layout_marginTop="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/graph"
-                android:layout_marginHorizontal="30dp"
-                />
-
-        </LinearLayout>
-
         <TextView
-            android:textAlignment="center"
-            android:layout_marginTop="15dp"
+            android:id="@+id/amount_total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:text="₹40000 + ₹7200"
+            android:textAlignment="center"
+            android:textColor="@color/primary_color"
             android:textSize="35sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_color"
-            />
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tnx_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="2000 Transactions"
-            android:textSize="17sp"
             android:textAlignment="center"
-            android:layout_marginTop="5dp"/>
+            android:textSize="17sp" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
 
-            <LinearLayout
-                android:layout_marginLeft="-10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="-10dp"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
 
-                <LinearLayout
-                    android:layout_marginRight="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginRight="10dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical">-->
 
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Invoiced" />
+<!--                    <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Invoiced" />-->
 
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cash" />
+<!--                    <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Cash" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_marginLeft="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginLeft="10dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical">-->
 
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dummy" />
+<!--                    <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Dummy" />-->
 
-                    <com.google.android.material.checkbox.MaterialCheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Online" />
+<!--                    <com.google.android.material.checkbox.MaterialCheckBox-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Online" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Details"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary_color"
-            android:textAlignment="center"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp"
+            android:text="Details"
+            android:textAlignment="center"
+            android:textColor="@color/primary_color"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/purchase_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

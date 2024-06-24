@@ -5,7 +5,7 @@ import android.util.Log;
 public class ListData {
 
     String invoice_id, invoice_sn, invoice_user_name, invoice_data, type, customer_type, aadhaar_number, billing_address, shipping_address, mobile_no;
-    int invoice_amount;
+    double invoice_amount;
 
     public ListData(String invoice_id, String invoice_sn, String invoice_user_name, String invoice_data, int invoice_amount,
                     String type, String customer_type, String aadhaar_number, String billing_address, String shipping_address, String mobile_no) {
@@ -22,7 +22,7 @@ public class ListData {
         this.mobile_no = mobile_no;
     }
 
-    public ListData(String invoice_user_name, String invoice_data, int invoice_amount) {
+    public ListData(String invoice_user_name, String invoice_data, double invoice_amount) {
         this.invoice_id = "";
         this.invoice_sn = "";
         this.invoice_user_name = invoice_user_name;
@@ -65,7 +65,7 @@ public class ListData {
         this.invoice_data = invoice_data;
     }
 
-    public int getInvoice_amount() {
+    public double getInvoice_amount() {
         return invoice_amount;
     }
 

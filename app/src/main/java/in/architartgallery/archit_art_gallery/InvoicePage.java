@@ -438,7 +438,6 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             data.put("doc_no", aadhaar_no_text.getText().toString());
             data.put("business_id", business_id);
             data.put("location_id", location_id);
-            data.put("payment_mode", "online");
             data.put("billing_address_id", Billing_Address_ID + "");
             data.put("shipping_address_id", Shipping_Address_ID + "");
             data.put("invoice_date", formattedDateTime);
