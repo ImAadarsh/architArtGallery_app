@@ -158,7 +158,7 @@
                     <TextView
                         android:textAlignment="textEnd"
                         android:id="@+id/total_ex_gst"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="1.5"
                         android:text="₹0"
                         android:textSize="16sp"
@@ -178,7 +178,7 @@
                     <TextView
                         android:textAlignment="textEnd"
                         android:id="@+id/delhi_gst_cost"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="1.5"
                         android:text="₹0"
                         android:textSize="16sp" />
@@ -197,7 +197,7 @@
                     <TextView
                         android:textAlignment="textEnd"
                         android:id="@+id/cgst_gst_cost"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="1.5"
                         android:text="₹0"
                         android:textSize="16sp" />
@@ -214,7 +214,7 @@
                     <TextView
                         android:textAlignment="textEnd"
                         android:id="@+id/igst_gst_cost"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="1.5"
                         android:text="₹0"
                         android:textSize="16sp" />
@@ -239,7 +239,7 @@
                     <TextView
                         android:textAlignment="textEnd"
                         android:id="@+id/total_with_gst"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_weight="1.5"
                         android:text="₹0"
                         android:textSize="16sp"

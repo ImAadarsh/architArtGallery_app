@@ -217,6 +217,7 @@ public class Create_Invoice extends AppCompatActivity implements DatePickerDialo
 
             // is_gst button
             is_gst_product = view.findViewById(R.id.is_gst_product);
+            if(Bill_Type.equals("performa")) { is_gst_product.setVisibility(View.GONE); }
 
             item_add_button.setOnClickListener(ev -> {
                 try {
