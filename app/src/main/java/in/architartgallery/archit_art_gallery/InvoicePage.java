@@ -116,8 +116,16 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         }
         typeRequestData.put("type", "normal");
         if(getIntent().hasExtra("INVOICE_ID")) {
-            Invoice_ID = Integer.parseInt(getIntent().getStringExtra("INVOICE_ID"));
-            Serial_NO = Integer.parseInt(getIntent().getStringExtra("INVOICE_SERIAL_NO"));
+            if(getIntent().getStringExtra("INVOICE_ID").equals("null")) {
+                Invoice_ID = 0;
+            }else {
+                Invoice_ID = Integer.parseInt(getIntent().getStringExtra("INVOICE_ID"));
+            }
+            if(getIntent().getStringExtra("INVOICE_SERIAL_NO").equals("null")) {
+                Serial_NO = 0;
+            }else {
+                Serial_NO = Integer.parseInt(getIntent().getStringExtra("INVOICE_SERIAL_NO"));
+            }
         }
         if(!(getIntent().getStringExtra("INVOICE_SERIAL_NO").length() >= 1)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(InvoicePage.this);
@@ -186,7 +194,7 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
         mobile_no_text = findViewById(R.id.mobile_no_text);
         next_invoice_button = findViewById(R.id.next_invoice_button);
 
-        invoice_serial_no.setText("SN. " + getIntent().getStringExtra("INVOICE_SERIAL_NO"));
+        invoice_serial_no.setText("SN. " + Serial_NO);
         invoice_to_text.setText(getIntent().getStringExtra("INVOICE_TO"));
         if(getIntent().getStringExtra("AADHAAR_NUMBER").equals("null")) {
             aadhaar_no_text.setText("");
@@ -431,6 +439,12 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
             // Create Invoice
             Map<String, String> data = new HashMap<>();
             data.put("type", typeRequestData.get("type"));
+            if(bill_type.equals("normal")) {
+                if(invoice_to_text.getText().toString().isEmpty() || mobile_no_text.getText().toString().isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Name, address and mobile no. is compulsory!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             data.put("name", invoice_to_text.getText().toString());
             data.put("mobile_number", mobile_no_text.getText().toString());
             data.put("customer_type", customer_type_options.getText().toString());
@@ -497,7 +511,11 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 },
                 error -> {
                     // Handle error
-                    Toast.makeText(getApplicationContext(), "API throw, 400 - Invalid invoice or request!", Toast.LENGTH_LONG).show();
+                    if(context.equals("fetch_address")) {
+                        //
+                    }else {
+                        Toast.makeText(getApplicationContext(), "API throw, 400 - Invalid invoice or request!", Toast.LENGTH_LONG).show();
+                    }
                     setLoading(false, "", context);
                 }) {
             @Override
@@ -557,8 +575,13 @@ public class InvoicePage extends AppCompatActivity implements DatePickerDialog.O
                 next_invoice_button.setText("Next");
                 next_invoice_button.setEnabled(true);
                 if(Billing_Address_ID == 0 || Shipping_Address_ID == 0) {
-                    Toast.makeText(getApplicationContext(), "Add address first.", Toast.LENGTH_SHORT).show();
-                    return;
+                    Log.d("Bill Type", bill_type);
+                    if(bill_type.equals("performa")) {
+                        //
+                    }else {
+                        Toast.makeText(getApplicationContext(), "Add address first.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                 }
                 Intent intent = new Intent(getApplicationContext(), Create_Invoice.class);
                 intent.putExtra("INVOICE_ID_CREATE", Invoice_ID + "");
